@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 public class Product
 {
     [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
+    [BsonRepresentation(BsonType.String)]
     public string Id { get; set; }
 
     [BsonElement("Name")]
@@ -15,9 +15,7 @@ public class Product
 
     [BsonElement("Price")]
     public decimal Price { get; set; }
-
+    
     [BsonElement("StockQuantity")]
     public int StockQuantity { get; set; }
 }
-
-
