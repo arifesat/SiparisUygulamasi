@@ -5,8 +5,6 @@ using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-
-
 [ApiController]
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase

@@ -14,6 +14,8 @@ namespace SiparisUygulamasi.Data
         }
 
         public IMongoCollection<Product> Products => _database.GetCollection<Product>("Products");
+        public IMongoCollection<User> Users => _database.GetCollection<User>("Users");
+        public IMongoCollection<Order> Orders => _database.GetCollection<Order>("Orders");
     }
 
 }
