@@ -16,6 +16,9 @@ public class Product
 
     [BsonElement("Price")]
     public decimal Price { get; set; }
+
+    [BsonElement("StockQuantity")]
+    public int StockQuantity { get; set; }
 }
 
 
