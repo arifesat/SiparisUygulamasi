@@ -1,4 +1,6 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.Extensions.Options;
+using MongoDB.Driver;
+using MongoDB.Driver.Core.Configuration;
 using SiparisUygulamasi.Models;
 
 namespace SiparisUygulamasi.Data
@@ -7,10 +9,16 @@ namespace SiparisUygulamasi.Data
     {
         private readonly IMongoDatabase _database;
 
-        public MongoDBContext(string connectionString, string databaseName)
+        //public MongoDBContext(string connectionString, string databaseName)
+        public MongoDBContext(IOptions<MongoDBSettings> settings)
+
         {
-            var client = new MongoClient(connectionString);
-            _database = client.GetDatabase(databaseName);
+            //var client = new MongoClient(connectionString);
+            var client = new MongoClient(settings.Value.ConnectionString);
+
+            //_database = client.GetDatabase(databaseName);
+            _database = client.GetDatabase(settings.Value.DatabaseName);
+
         }
 
         public IMongoCollection<Product> Products => _database.GetCollection<Product>("Products");

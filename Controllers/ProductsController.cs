@@ -10,16 +10,27 @@ using System.Threading.Tasks;
 public class ProductsController : ControllerBase
 {
     private readonly MongoDBContext _context;
+    private readonly ILogger<OrderController> _logger;
 
-    public ProductsController(MongoDBContext context)
+    public ProductsController(MongoDBContext context, ILogger<OrderController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<IEnumerable<Product>> Get()
     {
-        return await _context.Products.Find(_ => true).ToListAsync();
+        try
+        {
+            return await _context.Products.Find(_ => true).ToListAsync();
+
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while retrieving products.");
+            throw;
+        }
     }
 
     [HttpGet("{id}")]

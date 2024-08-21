@@ -11,10 +11,16 @@ builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection(nam
 
 builder.Services.AddSingleton<MongoDBContext>(serviceProvider =>
 {
-    var settings = serviceProvider.GetRequiredService<IOptions<MongoDBSettings>>().Value;
-    return new MongoDBContext(settings.ConnectionString, settings.DatabaseName);
+    var settings = serviceProvider.GetRequiredService<IOptions<MongoDBSettings>>();
+
+    //var settings = serviceProvider.GetRequiredService<IOptions<MongoDBSettings>>().Value;
+    //return new MongoDBContext(settings.ConnectionString, settings.DatabaseName);
+    return new MongoDBContext(settings);
+
 });
 
+// Add SeedData as a service
+builder.Services.AddTransient<SeedData>();
 // Add controllers
 builder.Services.AddControllers();
 
@@ -24,6 +30,14 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+// Seed the database
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var seedData = services.GetRequiredService<SeedData>();
+    await seedData.SeedAsync();
+}
 
 app.UseHttpsRedirection();
 

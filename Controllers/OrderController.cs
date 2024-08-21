@@ -7,16 +7,29 @@ using MongoDB.Driver;
 public class OrderController : ControllerBase
 {
     private readonly MongoDBContext _context;
+    private readonly ILogger<OrderController> _logger;
 
-    public OrderController(MongoDBContext context)
+
+    public OrderController(MongoDBContext context, ILogger<OrderController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<IEnumerable<Order>> Get()
     {
-        return await _context.Orders.Find(_ => true).ToListAsync();
+        //return await _context.Orders.Find(_ => true).ToListAsync();
+
+        try
+        {
+            return await _context.Orders.Find(_ => true).ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while retrieving orders.");
+            throw;
+        }
     }
 
     [HttpGet("{id}")]
