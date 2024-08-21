@@ -15,8 +15,13 @@ namespace SiparisUygulamasi.Data
             _context = context;
         }
 
+        //Database's name is ProductsDB and works on port 27017
+        //Check appsettings.json
+
         public async Task SeedAsync()
         {
+            // Adds prodcuts to the "Produdcts" collection in db
+
             // Check if any products exist
             if (!_context.Products.Find(_ => true).Any())
             {
@@ -25,11 +30,10 @@ namespace SiparisUygulamasi.Data
             new Product { Name = "Example Product", Price = 100.00M, Category = "Electronics", StockQuantity = 10 },
             new Product { Name = "Another Product", Price = 50.00M, Category = "Books", StockQuantity = 20 }
         };
-
                 await _context.Products.InsertManyAsync(products);
             }
 
-            // Similar logic can be applied to Users and Orders
+            // Adds users to the "Users" collection in db
 
             if(!_context.Users.Find(_ => true).Any())
             {
@@ -40,6 +44,18 @@ namespace SiparisUygulamasi.Data
                     };
                 await _context.Users.InsertManyAsync(users);
             }
+
+            // Adds orders to the "Orders" collection in db
+
+            //if (!_context.Orders.Find(_ => true).Any())
+            //{
+            //    var orders = new List<Order>
+            //    {
+            //        new Order {},
+            //        new Order {}
+            //        };
+            //    await _context.Orders.InsertManyAsync(orders);
+            //}
         }
     }
 }
