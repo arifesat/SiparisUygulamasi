@@ -13,8 +13,8 @@ namespace SiparisUygulamasi.Models
         [BsonElement("ProductId")]
         public string ProductId { get; set; } // Sepet öğesinde yer alan ürünün Id'si
 
-        [BsonElement("ProductName")]
-        public string Name { get; set; }
+        [BsonElement("Product")]
+        public Product Product { get; set; }
 
         [BsonElement("Quantity")]
         public int Quantity { get; set; } // Ürün miktarı

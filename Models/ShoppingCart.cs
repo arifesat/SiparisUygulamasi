@@ -20,5 +20,9 @@ namespace SiparisUygulamasi.Models
 
         [BsonElement("Status")]
         public string Status { get; set; } // Sepetin durumu
+
+        [BsonElement("Items")]
+        public List<CartItem> Items { get; set; } = new List<CartItem>();
     }
+
 }

@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using SiparisUygulamasi.Models;
 
 public class Order
 {
@@ -10,8 +11,8 @@ public class Order
     [BsonElement("UserId")]
     public String UserId { get; set; }  // Siparişi veren kullanıcının Id'si
 
-    [BsonElement("Products")]
-    public List<OrderItem> Products { get; set; }  // Siparişte yer alan ürünler listesi
+    [BsonElement("Items")]
+    public List<OrderItem> Items { get; set; }  // Siparişte yer alan ürünler listesi
 
     [BsonElement("OrderDate")]
     public DateTime OrderDate { get; set; } // Siparişin verildiği tarih
@@ -25,12 +26,12 @@ public class Order
     [BsonElement("Address")]
     public string Address { get; set; }  // Siparişin teslim edileceği adres
 }
-public class OrderItem
-{
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public ObjectId ProductId { get; set; }  // Siparişte yer alan ürünün Id'si
+//public class OrderItem
+//{
+//    [BsonId]
+//    [BsonRepresentation(BsonType.ObjectId)]
+//    public ObjectId ProductId { get; set; }  // Siparişte yer alan ürünün Id'si
 
-    [BsonElement("Quantity")]
-    public int Quantity { get; set; }        // Ürünün miktarı
-}
+//    [BsonElement("Quantity")]
+//    public int Quantity { get; set; }        // Ürünün miktarı
+//}
