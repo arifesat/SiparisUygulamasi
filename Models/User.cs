@@ -6,6 +6,7 @@ public class User
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public String Id { get; set; }
+
     [BsonElement("Username")]
     public string Username { get; set; }
 
@@ -13,11 +14,11 @@ public class User
     public string Email { get; set; }
 
     [BsonElement("PasswdHash")]
-    public string PasswordHash { get; set; }
+    public string PasswordHash { get; set; } // Şifre hash'i
 
     [BsonElement("Balance")]
-    public decimal Balance { get; set; }
+    public decimal Balance { get; set; } // Kullanıcının bakiyesi
 
     [BsonElement("Role")]
-    public string Role { get; set; }
+    public string Role { get; set; } // Kullanıcının rolü (Admin, Customer vb.)
 }

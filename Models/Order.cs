@@ -5,20 +5,32 @@ public class Order
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public String Id { get; set; }
+    public String Id { get; set; } // Sipariş Id'si
 
+    [BsonElement("UserId")]
     public String UserId { get; set; }  // Siparişi veren kullanıcının Id'si
 
+    [BsonElement("Products")]
     public List<OrderItem> Products { get; set; }  // Siparişte yer alan ürünler listesi
 
-    public DateTime OrderDate { get; set; }
+    [BsonElement("OrderDate")]
+    public DateTime OrderDate { get; set; } // Siparişin verildiği tarih
 
-    public decimal TotalAmount { get; set; }
+    [BsonElement("TotalAmount")]
+    public decimal TotalAmount { get; set; } // Siparişin toplam tutarı
 
+    [BsonElement("Status")]
     public string Status { get; set; }  //Siparişin durumu
+
+    [BsonElement("Address")]
+    public string Address { get; set; }  // Siparişin teslim edileceği adres
 }
 public class OrderItem
 {
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
     public ObjectId ProductId { get; set; }  // Siparişte yer alan ürünün Id'si
+
+    [BsonElement("Quantity")]
     public int Quantity { get; set; }        // Ürünün miktarı
 }
