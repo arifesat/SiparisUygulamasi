@@ -20,16 +20,19 @@ namespace SiparisUygulamasi.Data
 
         public async Task SeedAsync()
         {
+            // If any data is available in the given collection it doesn't add anything
+
             // Adds prodcuts to the "Produdcts" collection in db
 
             // Check if any products exist
             if (!_context.Products.Find(_ => true).Any())
             {
                 var products = new List<Product>
-        {
-            new Product { Name = "Example Product", Price = 100.00M, Category = "Electronics", StockQuantity = 10 },
-            new Product { Name = "Another Product", Price = 50.00M, Category = "Books", StockQuantity = 20 }
-        };
+                    {
+                      new Product { Name = "Example Product", Price = 100.00M, Category = "Electronics", StockQuantity = 10 },
+                      new Product { Name = "Another Product", Price = 50.00M, Category = "Books", StockQuantity = 20 },
+                      new Product { Name = "Yet Another Product", Price = 500.00M, Category = "Clothes", StockQuantity = 200 }
+                    };
                 await _context.Products.InsertManyAsync(products);
             }
 
@@ -39,8 +42,10 @@ namespace SiparisUygulamasi.Data
             {
                 var users = new List<User>
                 {
-                    new User {Username = "Arif", Email= "arif_esat@outlook.com", PasswordHash = "asdsa", Role = "Admin"},
-                    new User {Username = "Esat", Email= "arifesat@outlook.com", PasswordHash = "asdsad", Role = "Customer"}
+                    new User {Username = "Ariff", Email= "arif_esat@outlook.com", PasswordHash = "asdsa", Balance = 1000.00M, Role = "Admin"},
+                    new User {Username = "Esatt", Email= "arifesat@outlook.com", PasswordHash = "asdsad", Balance = 10.00M, Role = "Customer"},
+                    new User {Username = "Esatt", Email= "arifesat@outlook.com", PasswordHash = "asdsad", Balance = 10.00M, Role = "Customer"}
+
                     };
                 await _context.Users.InsertManyAsync(users);
             }

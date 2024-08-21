@@ -15,6 +15,9 @@ public class User
     [BsonElement("PasswdHash")]
     public string PasswordHash { get; set; }
 
+    [BsonElement("Balance")]
+    public decimal Balance { get; set; }
+
     [BsonElement("Role")]
     public string Role { get; set; }
 }
