@@ -29,6 +29,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddScoped<ProductRepository>();
+builder.Services.AddScoped<OrderRepository>();
+builder.Services.AddScoped<ShoppingCartRepository>();
 
 var app = builder.Build();
 
