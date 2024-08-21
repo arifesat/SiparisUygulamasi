@@ -23,6 +23,11 @@ namespace SiparisUygulamasi.Data
             return await _users.Find(user => user.Id == id.ToString()).FirstOrDefaultAsync();
         }
 
+        public async Task<User> GetUserByEmailAsync(string Email)
+        {
+            return await _users.Find(user => user.Email == Email).FirstOrDefaultAsync();
+        }
+
         public async Task AddUserAsync(User user)
         {
             await _users.InsertOneAsync(user);
