@@ -28,6 +28,8 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new() { Title = "SiparisUygulamasi", Version = "v1" });
 });
 
+builder.Services.AddScoped<ProductRepository>();
+
 var app = builder.Build();
 
 // Veritabanı oluşturulduktan sonra veri eklemek için SeedData sınıfını kullan
