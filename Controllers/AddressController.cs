@@ -32,7 +32,7 @@ namespace SiparisUygulamasi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Address>> Get(string id)
+        public async Task<ActionResult<Address>> Get(ObjectId id)
         {
             var address = await _context.Addresses.Find(p => p.Id == id).FirstOrDefaultAsync();
 
@@ -52,7 +52,7 @@ namespace SiparisUygulamasi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, Address addressIn)
+        public async Task<IActionResult> Update(ObjectId id, Address addressIn)
         {
             var address = await _context.Addresses.Find(p => p.Id == id).FirstOrDefaultAsync();
             if (address == null)
@@ -65,7 +65,7 @@ namespace SiparisUygulamasi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(ObjectId id)
         {
             var address = await _context.Addresses.Find(p => p.Id == id).FirstOrDefaultAsync();
             if (address == null)
