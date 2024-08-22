@@ -30,7 +30,7 @@ namespace SiparisUygulamasi.Services
                 throw new Exception("Product not found.");
             }
 
-            var existingItem = cart.Items.FirstOrDefault(item => item.Product.Id == productId.ToString());
+            var existingItem = cart.Items.FirstOrDefault(item => item.Product.Id == productId);
             if (existingItem != null)
             {
                 existingItem.Quantity += quantity; // Update quantity if the item already exists in the cart
@@ -51,7 +51,7 @@ namespace SiparisUygulamasi.Services
                 throw new Exception("Cart not found.");
             }
 
-            var itemToRemove = cart.Items.FirstOrDefault(item => item.Product.Id == productId.ToString());
+            var itemToRemove = cart.Items.FirstOrDefault(item => item.Product.Id == productId);
             if (itemToRemove != null)
             {
                 cart.Items.Remove(itemToRemove);

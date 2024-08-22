@@ -22,7 +22,7 @@ namespace SiparisUygulamasi.Data
         // Method to get a product by its ID
         public async Task<Product> GetProductByIdAsync(ObjectId id)
         {
-            return await _products.Find(product => product.Id == id.ToString()).FirstOrDefaultAsync();
+            return await _products.Find(product => product.Id == id).FirstOrDefaultAsync();
         }
 
         // Method to add a new product
@@ -34,13 +34,13 @@ namespace SiparisUygulamasi.Data
         // Method to update an existing product
         public async Task UpdateProductAsync(ObjectId id, Product updatedProduct)
         {
-            await _products.ReplaceOneAsync(product => product.Id == id.ToString(), updatedProduct);
+            await _products.ReplaceOneAsync(product => product.Id == id, updatedProduct);
         }
 
         // Method to delete a product
         public async Task DeleteProductAsync(ObjectId id)
         {
-            await _products.DeleteOneAsync(product => product.Id == id.ToString());
+            await _products.DeleteOneAsync(product => product.Id == id);
         }
     }
 }

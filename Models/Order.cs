@@ -26,12 +26,3 @@ public class Order
     [BsonElement("Address")]
     public string Address { get; set; }  // Siparişin teslim edileceği adres
 }
-//public class OrderItem
-//{
-//    [BsonId]
-//    [BsonRepresentation(BsonType.ObjectId)]
-//    public ObjectId ProductId { get; set; }  // Siparişte yer alan ürünün Id'si
-
-//    [BsonElement("Quantity")]
-//    public int Quantity { get; set; }        // Ürünün miktarı
-//}

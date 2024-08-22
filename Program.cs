@@ -16,7 +16,6 @@ builder.Services.AddSingleton<MongoDBContext>(serviceProvider =>
     //var settings = serviceProvider.GetRequiredService<IOptions<MongoDBSettings>>().Value;
     //return new MongoDBContext(settings.ConnectionString, settings.DatabaseName);
     return new MongoDBContext(settings);
-
 });
 
 // SeedData servisini ekle

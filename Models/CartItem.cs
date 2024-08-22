@@ -8,7 +8,7 @@ namespace SiparisUygulamasi.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; } // Sepet öğesi Id'si
+        public ObjectId Id { get; set; } // Sepet öğesi Id'si
 
         [BsonElement("ProductId")]
         public string ProductId { get; set; } // Sepet öğesinde yer alan ürünün Id'si

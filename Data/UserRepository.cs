@@ -20,7 +20,7 @@ namespace SiparisUygulamasi.Data
 
         public async Task<User> GetUserByIdAsync(ObjectId id)
         {
-            return await _users.Find(user => user.Id == id.ToString()).FirstOrDefaultAsync();
+            return await _users.Find(user => user.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<User> GetUserByEmailAsync(string Email)
@@ -35,12 +35,12 @@ namespace SiparisUygulamasi.Data
 
         public async Task UpdateUserAsync(ObjectId id, User updatedUser)
         {
-            await _users.ReplaceOneAsync(user => user.Id == id.ToString(), updatedUser);
+            await _users.ReplaceOneAsync(user => user.Id == id, updatedUser);
         }
 
         public async Task DeleteUserAsync(ObjectId id)
         {
-            await _users.DeleteOneAsync(user => user.Id == id.ToString());
+            await _users.DeleteOneAsync(user => user.Id == id);
         }
     }
 }

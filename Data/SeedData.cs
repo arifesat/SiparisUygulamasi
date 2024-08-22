@@ -49,18 +49,6 @@ namespace SiparisUygulamasi.Data
                     };
                 await _context.Users.InsertManyAsync(users);
             }
-
-            // Adds orders to the "Orders" collection in db
-
-            //if (!_context.Orders.Find(_ => true).Any())
-            //{
-            //    var orders = new List<Order>
-            //    {
-            //        new Order {},
-            //        new Order {}
-            //        };
-            //    await _context.Orders.InsertManyAsync(orders);
-            //}
         }
     }
 }
