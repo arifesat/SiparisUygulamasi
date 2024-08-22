@@ -25,6 +25,8 @@ namespace SiparisUygulamasi.Data
         public IMongoCollection<User> Users => _database.GetCollection<User>("Users");
         public IMongoCollection<Order> Orders => _database.GetCollection<Order>("Orders");
         public IMongoCollection<ShoppingCart> ShoppingCarts => _database.GetCollection<ShoppingCart>("ShoppingCarts");
+        public IMongoCollection<Address> Addresses => _database.GetCollection<Address>("Addreses");
+
         public IMongoDatabase Database => _database;
     }
 

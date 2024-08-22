@@ -24,5 +24,5 @@ public class Order
     public string Status { get; set; }  //Siparişin durumu
 
     [BsonElement("Address")]
-    public string Address { get; set; }  // Siparişin teslim edileceği adres
+    public Address Address { get; set; }  // Siparişin teslim edileceği adres
 }
