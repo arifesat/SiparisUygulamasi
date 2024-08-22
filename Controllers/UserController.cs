@@ -2,8 +2,6 @@
 using SiparisUygulamasi.Data;
 using SiparisUygulamasi.Models;
 using MongoDB.Driver;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using MongoDB.Bson;
 
 [ApiController]

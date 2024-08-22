@@ -11,7 +11,7 @@ namespace SiparisUygulamasi.Models
         public ObjectId Id { get; set; } // Sepet öğesi Id'si
 
         [BsonElement("ProductId")]
-        public string ProductId { get; set; } // Sepet öğesinde yer alan ürünün Id'si
+        public ObjectId ProductId { get; set; } // Sepet öğesinde yer alan ürünün Id'si
 
         [BsonElement("Product")]
         public Product Product { get; set; }
@@ -19,9 +19,9 @@ namespace SiparisUygulamasi.Models
         [BsonElement("Quantity")]
         public int Quantity { get; set; } // Ürün miktarı
 
-        [BsonElement("Price")]
         public decimal Price { get; set; } // Ürün fiyatı
 
+        [BsonElement("Price")]
         public decimal TotalPrice => Price * Quantity; // Ürün miktarı ile fiyatı çarpılarak toplam fiyat hesaplanır
 
     }

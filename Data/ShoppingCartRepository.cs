@@ -16,7 +16,7 @@ namespace SiparisUygulamasi.Data
 
         public async Task<ShoppingCart> GetCartByUserIdAsync(ObjectId userId)
         {
-            return await _shoppingCarts.Find(cart => cart.UserId == userId.ToString()).FirstOrDefaultAsync();
+            return await _shoppingCarts.Find(cart => cart.UserId == userId).FirstOrDefaultAsync();
         }
 
         public async Task AddCartAsync(ShoppingCart cart)
@@ -31,7 +31,7 @@ namespace SiparisUygulamasi.Data
 
         public async Task DeleteCartAsync(ObjectId userId)
         {
-            await _shoppingCarts.DeleteOneAsync(cart => cart.UserId == userId.ToString());
+            await _shoppingCarts.DeleteOneAsync(cart => cart.UserId == userId);
         }
     }
 }

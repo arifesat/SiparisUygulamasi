@@ -7,13 +7,13 @@ namespace SiparisUygulamasi.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; } // Sepet Id'si
+        public ObjectId Id { get; set; } // Sepet Id'si
 
         [BsonElement("UserId")]
-        public string UserId { get; set; } // Sepeti oluşturan kullanıcının Id'si
+        public ObjectId UserId { get; set; } // Sepeti oluşturan kullanıcının Id'si
 
-        [BsonElement("Products")]
-        public string ShoppingCartId { get; set; } // Sepette yer alan ürünler listesi
+        //[BsonElement("Products")]
+        //public ObjectId ShoppingCartId { get; set; } // Sepette yer alan ürünler listesi
 
         [BsonElement("TotalAmount")]
         public decimal TotalAmount { get; set; } // Sepetin toplam tutarı

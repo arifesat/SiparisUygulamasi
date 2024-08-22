@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using SiparisUygulamasi.Models;
 using SiparisUygulamasi.Data;
+using SiparisUygulamasi.Services;
 using MongoDB.Driver;
 using Microsoft.Extensions.Options;
 
@@ -27,9 +28,15 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new() { Title = "SiparisUygulamasi", Version = "v1" });
 });
 
+builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<ProductRepository>();
 builder.Services.AddScoped<OrderRepository>();
 builder.Services.AddScoped<ShoppingCartRepository>();
+
+builder.Services.AddScoped<UserService>();
+//builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<ShoppingCartService>();
 
 var app = builder.Build();
 

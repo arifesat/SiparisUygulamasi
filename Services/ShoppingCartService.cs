@@ -22,7 +22,7 @@ namespace SiparisUygulamasi.Services
 
         public async Task AddItemToCartAsync(ObjectId userId, ObjectId productId, int quantity)
         {
-            var cart = await _shoppingCartRepository.GetCartByUserIdAsync(userId) ?? new ShoppingCart { UserId = userId.ToString(), Items = new List<CartItem>() };
+            var cart = await _shoppingCartRepository.GetCartByUserIdAsync(userId) ?? new ShoppingCart { UserId = userId, Items = new List<CartItem>() };
 
             var product = await _productRepository.GetProductByIdAsync(productId);
             if (product == null)
