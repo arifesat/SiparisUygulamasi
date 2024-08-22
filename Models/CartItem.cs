@@ -6,23 +6,19 @@ namespace SiparisUygulamasi.Models
 {
     public class CartItem
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public ObjectId Id { get; set; } // Sepet öğesi Id'si
-
         [BsonElement("ProductId")]
-        public ObjectId ProductId { get; set; } // Sepet öğesinde yer alan ürünün Id'si
+        public ObjectId ProductId { get; set; }
 
         [BsonElement("Product")]
-        public Product Product { get; set; }
+        public string Product { get; set; }
 
         [BsonElement("Quantity")]
-        public int Quantity { get; set; } // Ürün miktarı
-
-        public decimal Price { get; set; } // Ürün fiyatı
+        public int Quantity { get; set; }
 
         [BsonElement("Price")]
-        public decimal TotalPrice => Price * Quantity; // Ürün miktarı ile fiyatı çarpılarak toplam fiyat hesaplanır
+        public decimal Price { get; set; }
 
+        [BsonElement("TotalPrice")]
+        public decimal TotalPrice => Quantity * Price; // This property is calculated and should not be serialized
     }
 }

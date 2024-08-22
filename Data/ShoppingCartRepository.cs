@@ -14,6 +14,18 @@ namespace SiparisUygulamasi.Data
             _shoppingCarts = context.ShoppingCarts;
         }
 
+        public async Task<ShoppingCart> CreateNewCartAsync()
+        {
+            var newCart = new ShoppingCart
+            {
+                Id = ObjectId.GenerateNewId(), // Generate a unique ID
+                Items = new List<CartItem>()
+            };
+
+            await _shoppingCarts.InsertOneAsync(newCart);
+            return newCart;
+        }
+
         public async Task<ShoppingCart> GetCartByUserIdAsync(ObjectId userId)
         {
             return await _shoppingCarts.Find(cart => cart.UserId == userId).FirstOrDefaultAsync();

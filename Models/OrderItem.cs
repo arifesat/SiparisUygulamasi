@@ -10,7 +10,7 @@ namespace SiparisUygulamasi.Models
         public ObjectId Id { get; set; }
 
         [BsonElement("ProductId")]
-        public ObjectId ProductId { get; set; }
+        public string ProductId { get; set; }
 
         [BsonElement("ProductName")]
         public string ProductName { get; set; }

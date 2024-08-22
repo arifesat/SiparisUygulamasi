@@ -43,10 +43,10 @@ namespace SiparisUygulamasi.Services
             // Create the order based on the shopping cart items
             var orderItems = cart.Items.Select(item => new OrderItem
             {
-                ProductId = item.Product.Id, // Convert ObjectId to string
-                ProductName = item.Product.Name,
+                ProductId = item.ProductId.ToString(), // Convert ObjectId to string
+                ProductName = item.Product,
                 Quantity = item.Quantity,
-                Price = item.Product.Price
+                Price = item.Price
             }).ToList();
 
             var order = new Order

@@ -1,92 +1,106 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
-using SiparisUygulamasi.Models;
+using MongoDB.Driver;
 using SiparisUygulamasi.Services;
-using System.Threading.Tasks;
+using SiparisUygulamasi.Data;
 
-namespace SiparisUygulamasi.Controllers
+[ApiController]
+[Route("api/[controller]")]
+public class ShoppingCartController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ShoppingCartController : ControllerBase
+    private readonly ShoppingCartService _shoppingCartService;
+
+    private readonly MongoDBContext _context;
+
+    public ShoppingCartController(MongoDBContext context)
     {
-        private readonly ShoppingCartService _shoppingCartService;
-
-        public ShoppingCartController(ShoppingCartService shoppingCartService)
-        {
-            _shoppingCartService = shoppingCartService;
-        }
-
-        [HttpGet("{userId}")]
-        public async Task<ActionResult<ShoppingCart>> GetCartByUserId(string userId)
-        {
-            if (!ObjectId.TryParse(userId, out var objectId))
-            {
-                return BadRequest("Invalid user ID format.");
-            }
-
-            var cart = await _shoppingCartService.GetCartByUserIdAsync(objectId);
-            if (cart == null)
-            {
-                return NotFound();
-            }
-
-            return cart;
-        }
-
-        [HttpPost("{userId}/items")]
-        public async Task<IActionResult> AddItemToCart(string userId, [FromBody] AddItemRequest request)
-        {
-            if (!ObjectId.TryParse(userId, out var objectId))
-            {
-                return BadRequest("Invalid user ID format.");
-            }
-
-            if (!ObjectId.TryParse(request.ProductId, out var productId))
-            {
-                return BadRequest("Invalid product ID format.");
-            }
-
-            await _shoppingCartService.AddItemToCartAsync(objectId, productId, request.Quantity);
-            return NoContent();
-        }
-
-        [HttpDelete("{userId}/items/{productId}")]
-        public async Task<IActionResult> RemoveItemFromCart(string userId, string productId)
-        {
-            if (!ObjectId.TryParse(userId, out var objectId))
-            {
-                return BadRequest("Invalid user ID format.");
-            }
-
-            if (!ObjectId.TryParse(productId, out var productObjectId))
-            {
-                return BadRequest("Invalid product ID format.");
-            }
-
-            await _shoppingCartService.RemoveItemFromCartAsync(objectId, productObjectId);
-            return NoContent();
-        }
-
-        [HttpDelete("{userId}")]
-        public async Task<IActionResult> ClearCart(string userId)
-        {
-            if (!ObjectId.TryParse(userId, out var objectId))
-            {
-                return BadRequest("Invalid user ID format.");
-            }
-
-            await _shoppingCartService.ClearCartAsync(objectId);
-            return NoContent();
-        }
+        _context = context;
     }
 
-    public class AddItemRequest
+    public ShoppingCartController(ShoppingCartService shoppingCartService)
     {
-        public string ProductId { get; set; }
-        public int Quantity { get; set; }
+        _shoppingCartService = shoppingCartService;
+    }
+
+    [HttpGet("{userId}")]
+    public async Task<ActionResult<ShoppingCart>> GetCartByUserId(string userId)
+    {
+        if (!ObjectId.TryParse(userId, out var objectId))
+        {
+            return BadRequest("Invalid user ID format.");
+        }
+
+        var cart = await _shoppingCartService.GetCartByUserIdAsync(objectId);
+        if (cart == null)
+        {
+            return NotFound();
+        }
+
+        return cart;
+    }
+
+    //[HttpPost]
+    //public async Task<ActionResult<ShoppingCart>> Create(ShoppingCart ShoppingCart)
+    //{
+    //    await _context.ShoppingCarts.InsertOneAsync(ShoppingCart);
+    //    return CreatedAtRoute(new { id = ShoppingCart.Id }, ShoppingCart);
+    //}
+
+    [HttpPost("{userId}/items")]
+    public async Task<IActionResult> AddItemToCart(string userId, [FromBody] AddItemRequest request)
+    {
+        if (!ObjectId.TryParse(userId, out var objectId))
+        {
+            return BadRequest("Invalid user ID format.");
+        }
+
+        if (!ObjectId.TryParse(request.ProductId, out var productId))
+        {
+            return BadRequest("Invalid product ID format.");
+        }
+
+        var User = await _context.Users.Find(p => p.Id == objectId).FirstOrDefaultAsync();
+
+        await _shoppingCartService.AddItemToCartAsync(objectId, productId, request.Quantity);
+        return NoContent();
+    }
+
+    [HttpDelete("{userId}/items/{productId}")]
+    public async Task<IActionResult> RemoveItemFromCart(string userId, string productId)
+    {
+        if (!ObjectId.TryParse(userId, out var objectId))
+        {
+            return BadRequest("Invalid user ID format.");
+        }
+
+        if (!ObjectId.TryParse(productId, out var productObjectId))
+        {
+            return BadRequest("Invalid product ID format.");
+        }
+
+        await _shoppingCartService.RemoveItemFromCartAsync(objectId, productObjectId);
+        return NoContent();
+    }
+
+    [HttpDelete("{userId}")]
+    public async Task<IActionResult> ClearCart(string userId)
+    {
+        if (!ObjectId.TryParse(userId, out var objectId))
+        {
+            return BadRequest("Invalid user ID format.");
+        }
+
+        await _shoppingCartService.ClearCartAsync(objectId);
+        return NoContent();
     }
 }
+
+public class AddItemRequest
+{
+    public string ProductId { get; set; }
+    public int Quantity { get; set; }
+}
+
 
 //using Microsoft.AspNetCore.Mvc;
 //using SiparisUygulamasi.Data;
