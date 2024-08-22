@@ -11,12 +11,6 @@ public class ShoppingCart
     [BsonElement("UserId")]
     public ObjectId UserId { get; set; } // Sepeti oluşturan kullanıcının Id'si
 
-    //[BsonElement("Products")]
-    //public ObjectId ShoppingCartId { get; set; } // Sepette yer alan ürünler listesi
-
-    //[BsonElement("TotalAmount")]
-    //public decimal TotalAmount { get; set; } // Sepetin toplam tutarı
-
     [BsonElement("Status")]
     public string Status { get; set; } // Sepetin durumu
 

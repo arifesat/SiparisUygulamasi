@@ -15,9 +15,9 @@ namespace SiparisUygulamasi.Services
             _productRepository = productRepository;
         }
 
-        public async Task<ShoppingCart> CreateNewCartAsync()
+        public async Task<ShoppingCart> CreateNewCartAsync(ObjectId userId)
         {
-            return await _shoppingCartRepository.CreateNewCartAsync();
+            return await _shoppingCartRepository.CreateNewCartAsync(userId);
         }
 
         public async Task<ShoppingCart> GetCartByUserIdAsync(ObjectId userId)
@@ -27,11 +27,10 @@ namespace SiparisUygulamasi.Services
 
         public async Task AddItemToCartAsync(ObjectId userId, ObjectId productId, int quantity)
         {
-            //var cart = await _shoppingCartRepository.GetCartByUserIdAsync(userId) ?? new ShoppingCart { UserId = userId, Items = new List<CartItem>() };
             var cart = await _shoppingCartRepository.GetCartByUserIdAsync(userId);
             if (cart == null)
             {
-                cart = new ShoppingCart { UserId = userId }; // Create a new cart without setting Id
+                cart = await _shoppingCartRepository.CreateNewCartAsync(userId); // Create a new cart without setting Id
             }
 
             var product = await _productRepository.GetProductByIdAsync(productId);
@@ -47,9 +46,10 @@ namespace SiparisUygulamasi.Services
             }
             else
             {
-                cart.Items.Add(new CartItem { ProductId = productId, Product = product.Name, Price = product.Price, Quantity = quantity });
+                var newItem = new CartItem { ProductId = productId, Product = product.Name, Price = product.Price, Quantity = quantity };
+                cart.Items.Add(newItem);
+                //await _shoppingCartRepository.AddItemToCartAsync(userId, newItem);
             }
-
             await _shoppingCartRepository.UpdateCartAsync(cart);
         }
 

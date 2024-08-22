@@ -14,11 +14,12 @@ namespace SiparisUygulamasi.Data
             _shoppingCarts = context.ShoppingCarts;
         }
 
-        public async Task<ShoppingCart> CreateNewCartAsync()
+        public async Task<ShoppingCart> CreateNewCartAsync(ObjectId userId)
         {
             var newCart = new ShoppingCart
             {
-                Id = ObjectId.GenerateNewId(), // Generate a unique ID
+                Id = userId,
+                UserId = userId,
                 Items = new List<CartItem>()
             };
 
@@ -31,9 +32,11 @@ namespace SiparisUygulamasi.Data
             return await _shoppingCarts.Find(cart => cart.UserId == userId).FirstOrDefaultAsync();
         }
 
-        public async Task AddCartAsync(ShoppingCart cart)
+        public async Task AddItemToCartAsync(ObjectId userId, CartItem item)
         {
-            await _shoppingCarts.InsertOneAsync(cart);
+            var filter = Builders<ShoppingCart>.Filter.Eq(cart => cart.UserId, userId);
+            var update = Builders<ShoppingCart>.Update.Push(cart => cart.Items, item);
+            await _shoppingCarts.UpdateOneAsync(filter, update, new UpdateOptions { IsUpsert = true });
         }
 
         public async Task UpdateCartAsync(ShoppingCart updatedCart)

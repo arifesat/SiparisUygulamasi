@@ -12,14 +12,10 @@ public class ShoppingCartController : ControllerBase
 
     private readonly MongoDBContext _context;
 
-    public ShoppingCartController(MongoDBContext context)
-    {
-        _context = context;
-    }
-
-    public ShoppingCartController(ShoppingCartService shoppingCartService)
+    public ShoppingCartController(ShoppingCartService shoppingCartService, MongoDBContext context)
     {
         _shoppingCartService = shoppingCartService;
+        _context = context;
     }
 
     [HttpGet("{userId}")]
@@ -38,13 +34,6 @@ public class ShoppingCartController : ControllerBase
 
         return cart;
     }
-
-    //[HttpPost]
-    //public async Task<ActionResult<ShoppingCart>> Create(ShoppingCart ShoppingCart)
-    //{
-    //    await _context.ShoppingCarts.InsertOneAsync(ShoppingCart);
-    //    return CreatedAtRoute(new { id = ShoppingCart.Id }, ShoppingCart);
-    //}
 
     [HttpPost("{userId}/items")]
     public async Task<IActionResult> AddItemToCart(string userId, [FromBody] AddItemRequest request)
@@ -100,81 +89,3 @@ public class AddItemRequest
     public string ProductId { get; set; }
     public int Quantity { get; set; }
 }
-
-
-//using Microsoft.AspNetCore.Mvc;
-//using SiparisUygulamasi.Data;
-//using SiparisUygulamasi.Models;
-//using MongoDB.Driver;
-//using MongoDB.Bson;
-
-//[ApiController]
-//[Route("api/[controller]")]
-//public class ShoppingCartController : ControllerBase
-//{
-//    private readonly MongoDBContext _context;
-
-//    public ShoppingCartController(MongoDBContext context)
-//    {
-//        _context = context;
-//    }
-
-//    [HttpGet]
-//    public async Task<IEnumerable<ShoppingCart>> Get()
-//    {
-//        return await _context.ShoppingCarts.Find(_ => true).ToListAsync();
-//    }
-
-//    [HttpGet("{id}")]
-//    public async Task<ActionResult<ShoppingCart>> Get(string id)
-//    {
-//        var objectId = ObjectId.Parse(id);
-//        var ShoppingCart = await _context.ShoppingCarts.Find(p => p.Id == objectId).FirstOrDefaultAsync();
-
-//        if (ShoppingCart == null)
-//        {
-//            return NotFound();
-//        }
-//        return ShoppingCart;
-//    }
-
-//    [HttpPost]
-//    public async Task<ActionResult<ShoppingCart>> Create(ShoppingCart ShoppingCart)
-//    {
-//        await _context.ShoppingCarts.InsertOneAsync(ShoppingCart);
-//        return CreatedAtRoute(new { id = ShoppingCart.Id}, ShoppingCart);
-//    }
-
-//    [HttpPut("{id}")]
-//    public async Task<IActionResult> Update(string id, ShoppingCart ShoppingCartIn)
-//    {
-//        var objectId = ObjectId.Parse(id);
-//        var ShoppingCart = await _context.ShoppingCarts.Find(p => p.Id == objectId).FirstOrDefaultAsync();
-
-//        if (ShoppingCart == null)
-//        {
-//            return NotFound();
-//        }
-
-//        await _context.ShoppingCarts.ReplaceOneAsync(p => p.Id == objectId, ShoppingCartIn);
-
-//        return NoContent();
-//    }
-
-//    [HttpDelete("{id}")]
-//    public async Task<IActionResult> Delete(string id)
-//    {
-//        var objectId = ObjectId.Parse(id);
-
-//        var ShoppingCart = await _context.ShoppingCarts.Find(p => p.Id == objectId).FirstOrDefaultAsync();
-
-//        if (ShoppingCart == null)
-//        {
-//            return NotFound();
-//        }
-
-//        await _context.ShoppingCarts.DeleteOneAsync(p => p.Id == objectId);
-//        return NoContent();
-//    }
-
-//}
