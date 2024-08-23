@@ -1,6 +1,6 @@
 using MongoDB.Bson;
-using SiparisUygulamasi.Data;
 using SiparisUygulamasi.Models;
+using SiparisUygulamasi.Repositories;
 
 public class AddressService
 {

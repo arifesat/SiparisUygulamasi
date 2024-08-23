@@ -1,6 +1,6 @@
-﻿using SiparisUygulamasi.Data;
-using SiparisUygulamasi.Models;
+﻿using SiparisUygulamasi.Models;
 using MongoDB.Bson;
+using SiparisUygulamasi.Repositories;
 
 namespace SiparisUygulamasi.Services
 {

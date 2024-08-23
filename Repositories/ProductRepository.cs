@@ -1,8 +1,9 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using SiparisUygulamasi.Data;
 using SiparisUygulamasi.Models;
 
-namespace SiparisUygulamasi.Data
+namespace SiparisUygulamasi.Repositories
 {
     public class ProductRepository
     {

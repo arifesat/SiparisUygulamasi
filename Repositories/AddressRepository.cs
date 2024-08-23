@@ -4,7 +4,7 @@ using SiparisUygulamasi.Models;
 using SiparisUygulamasi.Data;
 
 
-namespace SiparisUygulamasi.Data
+namespace SiparisUygulamasi.Repositories
 {
     public class AddressRepository
     {

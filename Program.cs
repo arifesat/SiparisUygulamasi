@@ -5,6 +5,7 @@ using SiparisUygulamasi.Data;
 using SiparisUygulamasi.Services;
 using MongoDB.Driver;
 using Microsoft.Extensions.Options;
+using SiparisUygulamasi.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
