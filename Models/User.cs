@@ -49,8 +49,14 @@ public class User
             return builder.ToString();
         }
     }
+
     public void SetPassword(string password)
     {
         Password = password;
+    }
+
+    public bool VerifyPassword(string password)
+    {
+        return PasswordHash == ComputeHash(password);
     }
 }
