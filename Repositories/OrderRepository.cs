@@ -21,12 +21,12 @@ namespace SiparisUygulamasi.Repositories
 
         public async Task<Order> GetOrderByIdAsync(ObjectId id)
         {
-            return await _orders.Find(order => order.Id == id.ToString()).FirstOrDefaultAsync();
+            return await _orders.Find(order => order.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<List<Order>> GetOrdersByUserIdAsync(ObjectId userId)
         {
-            return await _orders.Find(order => order.UserId == userId.ToString()).ToListAsync();
+            return await _orders.Find(order => order.UserId == userId).ToListAsync();
         }
 
         public async Task AddOrderAsync(Order order)
@@ -36,12 +36,12 @@ namespace SiparisUygulamasi.Repositories
 
         public async Task UpdateOrderAsync(ObjectId id, Order updatedOrder)
         {
-            await _orders.ReplaceOneAsync(order => order.Id == id.ToString(), updatedOrder);
+            await _orders.ReplaceOneAsync(order => order.Id == id, updatedOrder);
         }
 
         public async Task DeleteOrderAsync(ObjectId id)
         {
-            await _orders.DeleteOneAsync(order => order.Id == id.ToString());
+            await _orders.DeleteOneAsync(order => order.Id == id);
         }
     }
 }

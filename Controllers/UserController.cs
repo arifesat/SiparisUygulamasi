@@ -37,6 +37,7 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<User>> Create(User User)
     {
+        User.SetPassword(User.Password);
         await _context.Users.InsertOneAsync(User);
         return CreatedAtRoute(new { id = User.Id }, User);
     }

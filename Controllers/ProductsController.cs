@@ -19,19 +19,19 @@ public class ProductsController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet]
-    public async Task<IEnumerable<Product>> Get()
-    {
-        try
-        {
-            return await _context.Products.Find(_ => true).ToListAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred while retrieving products.");
-            throw;
-        }
-    }
+    //[HttpGet]
+    //public async Task<IEnumerable<Product>> Get()
+    //{
+    //    try
+    //    {
+    //        return await _context.Products.Find(_ => true).ToListAsync();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        _logger.LogError(ex, "An error occurred while retrieving products.");
+    //        throw;
+    //    }
+    //}
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Product>> Get(string id)

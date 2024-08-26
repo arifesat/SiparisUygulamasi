@@ -6,10 +6,10 @@ public class Order
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public String Id { get; set; } // Sipariş Id'si
+    public ObjectId Id { get; set; } // Sipariş Id'si
 
     [BsonElement("UserId")]
-    public String UserId { get; set; }  // Siparişi veren kullanıcının Id'si
+    public ObjectId UserId { get; set; }  // Siparişi veren kullanıcının Id'si
 
     [BsonElement("Items")]
     public List<OrderItem> Items { get; set; }  // Siparişte yer alan ürünler listesi

@@ -42,9 +42,9 @@ namespace SiparisUygulamasi.Data
             {
                 var users = new List<User>
                 {
-                    new User {Username = "Ariff", Email= "arif_esat@outlook.com", PasswordHash = "asdsa", Balance = 1000.00M, Role = "Admin"},
-                    new User {Username = "Esatt", Email= "arifesat@outlook.com", PasswordHash = "asdsad", Balance = 10.00M, Role = "Customer"},
-                    new User {Username = "Esatt", Email= "arifesat@outlook.com", PasswordHash = "asdsad", Balance = 10.00M, Role = "Customer"}
+                    new User {Username = "Arif", Email= "arif_esat@outlook.com", Password = "12345", Balance = 1000.00M, Role = "Admin"},
+                    new User {Username = "Esat", Email= "arif_esat@outlook.com", Password = "123456", Balance = 10.00M, Role = "Customer"},
+                    new User {Username = "Yilmaz", Email= "arif_esat@outlook.com", Password = "111111", Balance = 10.00M, Role = "Customer"}
 
                     };
                 await _context.Users.InsertManyAsync(users);

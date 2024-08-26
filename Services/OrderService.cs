@@ -51,7 +51,7 @@ namespace SiparisUygulamasi.Services
 
             var order = new Order
             {
-                UserId = userId.ToString(),
+                UserId = userId,
                 Items = orderItems,
                 TotalAmount = orderItems.Sum(item => item.Quantity * item.Price),
                 Status = "Pending",

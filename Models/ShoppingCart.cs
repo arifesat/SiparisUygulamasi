@@ -12,7 +12,7 @@ public class ShoppingCart
     public ObjectId UserId { get; set; } // Sepeti oluşturan kullanıcının Id'si
 
     [BsonElement("Status")]
-    public string Status { get; set; } // Sepetin durumu
+    public required string Status { get; set; } // Sepetin durumu
 
     [BsonElement("TotalAmount")]
     public decimal TotalAmount => Items.Sum(item => item.TotalPrice);

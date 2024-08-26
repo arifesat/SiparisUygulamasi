@@ -1,5 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System.Text;
+using System.Security.Cryptography;
 
 public class User
 {
@@ -8,17 +10,47 @@ public class User
     public ObjectId Id { get; set; }
 
     [BsonElement("Username")]
-    public string Username { get; set; }
+    public required string Username { get; set; }
 
     [BsonElement("Email")]
-    public string Email { get; set; }
+    public required string Email { get; set; }
+
+    private string _password;
+    [BsonElement("Password")]
+    public required string Password
+    {
+        get => _password;
+        set
+        {
+            _password = value;
+            PasswordHash = ComputeHash(_password);
+        }
+    }
 
     [BsonElement("PasswdHash")]
     public string PasswordHash { get; set; } // Şifre hash'i
 
     [BsonElement("Balance")]
-    public decimal Balance { get; set; } // Kullanıcının bakiyesi
+    public required decimal Balance { get; set; } // Kullanıcının bakiyesi
 
     [BsonElement("Role")]
-    public string Role { get; set; } // Kullanıcının rolü (Admin, Customer vb.)
+    public required string Role { get; set; } // Kullanıcının rolü (Admin, Customer vb.)
+
+    private string ComputeHash(string input)
+    {
+        using (var sha256 = SHA256.Create())
+        {
+            var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+            var builder = new StringBuilder();
+            foreach (var b in bytes)
+            {
+                builder.Append(b.ToString("x2"));
+            }
+            return builder.ToString();
+        }
+    }
+    public void SetPassword(string password)
+    {
+        Password = password;
+    }
 }

@@ -14,9 +14,6 @@ builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection(nam
 builder.Services.AddSingleton<MongoDBContext>(serviceProvider =>
 {
     var settings = serviceProvider.GetRequiredService<IOptions<MongoDBSettings>>();
-
-    //var settings = serviceProvider.GetRequiredService<IOptions<MongoDBSettings>>().Value;
-    //return new MongoDBContext(settings.ConnectionString, settings.DatabaseName);
     return new MongoDBContext(settings);
 });
 
@@ -35,9 +32,9 @@ builder.Services.AddScoped<OrderRepository>();
 builder.Services.AddScoped<ShoppingCartRepository>();
 
 builder.Services.AddScoped<UserService>();
-//builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<ShoppingCartService>();
+//builder.Services.AddScoped<ProductService>();
 
 var app = builder.Build();
 

@@ -20,7 +20,8 @@ namespace SiparisUygulamasi.Repositories
             {
                 Id = userId,
                 UserId = userId,
-                Items = new List<CartItem>()
+                Items = new List<CartItem>(),
+                Status = "Active"
             };
 
             await _shoppingCarts.InsertOneAsync(newCart);

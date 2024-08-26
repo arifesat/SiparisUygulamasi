@@ -16,27 +16,32 @@ public class OrderController : ControllerBase
         _context = context;
         _logger = logger;
     }
+    //This code block returns all of the orders
+    //[HttpGet]
+    //public async Task<IEnumerable<Order>> Get()
+    //{
+    //    //return await _context.Orders.Find(_ => true).ToListAsync();
 
-    [HttpGet]
-    public async Task<IEnumerable<Order>> Get()
-    {
-        //return await _context.Orders.Find(_ => true).ToListAsync();
-
-        try
-        {
-            return await _context.Orders.Find(_ => true).ToListAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred while retrieving orders.");
-            throw;
-        }
-    }
+    //    try
+    //    {
+    //        return await _context.Orders.Find(_ => true).ToListAsync();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        _logger.LogError(ex, "An error occurred while retrieving orders.");
+    //        throw;
+    //    }
+    //}
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Order>> Get(string id)
     {
-        var order = await _context.Orders.Find(p => p.Id == id).FirstOrDefaultAsync();
+        if (!ObjectId.TryParse(id, out var objectId))
+        {
+            return BadRequest("Invalid ID format.");
+        }
+
+        var order = await _context.Orders.Find(p => p.Id == objectId).FirstOrDefaultAsync();
 
         if (order == null)
         {
@@ -44,6 +49,24 @@ public class OrderController : ControllerBase
         }
 
         return order;
+    }
+
+    [HttpGet("user/{userId}")]
+    public async Task<ActionResult<IEnumerable<Order>>> GetByUserId(string userId)
+    {
+        if (!ObjectId.TryParse(userId, out var userObjectId))
+        {
+            return BadRequest("Invalid UserId format.");
+        }
+
+        var orders = await _context.Orders.Find(p => p.UserId == userObjectId).ToListAsync();
+
+        if (orders == null || !orders.Any())
+        {
+            return NotFound();
+        }
+
+        return orders;
     }
 
     [HttpPost]
@@ -56,14 +79,19 @@ public class OrderController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(string id, Order orderIn)
     {
-        var order = await _context.Orders.Find(p => p.Id == id).FirstOrDefaultAsync();
+        if (!ObjectId.TryParse(id, out var objectId))
+        {
+            return BadRequest("Invalid ID format.");
+        }
+
+        var order = await _context.Orders.Find(p => p.Id == objectId).FirstOrDefaultAsync();
 
         if (order == null)
         {
             return NotFound();
         }
 
-        await _context.Orders.ReplaceOneAsync(p => p.Id == id, orderIn);
+        await _context.Orders.ReplaceOneAsync(p => p.Id == objectId, orderIn);
 
         return NoContent();
     }
@@ -71,14 +99,19 @@ public class OrderController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
-        var order = await _context.Orders.Find(p => p.Id == id).FirstOrDefaultAsync();
+        if (!ObjectId.TryParse(id, out var objectId))
+        {
+            return BadRequest("Invalid ID format.");
+        }
+
+        var order = await _context.Orders.Find(p => p.Id == objectId).FirstOrDefaultAsync();
 
         if (order == null)
         {
             return NotFound();
         }
 
-        await _context.Orders.DeleteOneAsync(p => p.Id == id);
+        await _context.Orders.DeleteOneAsync(p => p.Id == objectId);
 
         return NoContent();
     }
