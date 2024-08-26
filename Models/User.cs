@@ -16,7 +16,7 @@ public class User
     public required string Email { get; set; }
 
     private string _password;
-    [BsonElement("Password")]
+    [BsonIgnore]
     public required string Password
     {
         get => _password;
