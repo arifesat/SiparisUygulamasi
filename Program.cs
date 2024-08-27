@@ -34,11 +34,7 @@ builder.Services.AddScoped<ShoppingCartRepository>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<ShoppingCartService>();
-//builder.Services.AddScoped<ProductService>();
 
-// JWT Authentication
-//var key = Encoding.ASCII.GetBytes("XeBjh9anMn2kwxXjwOUBaENVVpTiGK3EGd/3bHdxmUc="); // Use a secure key
-//var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:SecretKey"]);
 var secretKey = builder.Configuration["Jwt:SecretKey"];
 if (string.IsNullOrEmpty(secretKey))
 {
