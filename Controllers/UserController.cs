@@ -1,34 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using MongoDB.Driver;
-using MongoDB.Bson;
 using SiparisUygulamasi.Data;
 using SiparisUygulamasi.Models;
-using SiparisUygulamasi.Services;
-using SiparisUygulamasi.Dtos;
+using MongoDB.Driver;
+using MongoDB.Bson;
 
 [ApiController]
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
     private readonly MongoDBContext _context;
-    private readonly UserService _userService;
 
-    public UserController(MongoDBContext context, UserService userService)
+    public UserController(MongoDBContext context)
     {
         _context = context;
-        _userService = userService;
     }
 
     [HttpGet]
-    [Authorize]
     public async Task<IEnumerable<User>> Get()
     {
         return await _context.Users.Find(_ => true).ToListAsync();
     }
 
     [HttpGet("{id}")]
-    [Authorize]
     public async Task<ActionResult<User>> Get(string id)
     {
         var objectId = ObjectId.Parse(id);
@@ -50,7 +43,6 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize]
     public async Task<IActionResult> Update(string id, User UserIn)
     {
         var objectId = ObjectId.Parse(id);
@@ -67,7 +59,6 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize]
     public async Task<IActionResult> Delete(string id)
     {
         var objectId = ObjectId.Parse(id);
@@ -84,16 +75,5 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
-    {
-        var token = await _userService.AuthenticateAsync(loginDTO.Email, loginDTO.Password);
-        if (token == null)
-        {
-            return Unauthorized();
-        }
-
-        return Ok(new { Token = token });
-    }
 }
 

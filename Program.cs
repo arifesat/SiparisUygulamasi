@@ -37,14 +37,7 @@ builder.Services.AddScoped<ShoppingCartService>();
 //builder.Services.AddScoped<ProductService>();
 
 // JWT Authentication
-//var key = Encoding.ASCII.GetBytes("XeBjh9anMn2kwxXjwOUBaENVVpTiGK3EGd/3bHdxmUc="); // Use a secure key
-//var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:SecretKey"]);
-var secretKey = builder.Configuration["Jwt:SecretKey"];
-if (string.IsNullOrEmpty(secretKey))
-{
-    throw new InvalidOperationException("JWT SecretKey is not configured.");
-}
-var key = Encoding.ASCII.GetBytes(secretKey);
+var key = Encoding.ASCII.GetBytes("YourSecretKeyHere"); // Use a secure key
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
