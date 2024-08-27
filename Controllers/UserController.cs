@@ -95,14 +95,5 @@ public class UserController : ControllerBase
 
         return Ok(new { Token = token });
     }
-
-    [HttpPost("logout")]
-    [Authorize]
-    public IActionResult Logout()
-    {
-        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-        var newToken = _userService.Logout(token);
-        return Ok(new { Message = "Logged out successfully", Token = newToken });
-    }
 }
 

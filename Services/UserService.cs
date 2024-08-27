@@ -77,29 +77,5 @@ namespace SiparisUygulamasi.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-
-        public string Logout(string token)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_secretKey);
-
-            // Read the token
-            var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
-            if (jwtToken == null)
-            {
-                throw new SecurityTokenException("Invalid token");
-            }
-
-            // Create a new token with the same claims but with an expiration date set to one day before
-            var newTokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(jwtToken.Claims),
-                Expires = DateTime.UtcNow.AddDays(2), // Set expiration date to one day before
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var newToken = tokenHandler.CreateToken(newTokenDescriptor);
-            return tokenHandler.WriteToken(newToken);
-        }
     }
 }
