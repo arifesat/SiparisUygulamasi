@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using SiparisUygulamasi.Models;
 using SiparisUygulamasi.Data;
 using SiparisUygulamasi.Services;
+using MongoDB.Driver;
 using Microsoft.Extensions.Options;
 using SiparisUygulamasi.Repositories;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,27 +36,6 @@ builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<ShoppingCartService>();
 //builder.Services.AddScoped<ProductService>();
 
-// JWT Authentication
-var key = Encoding.ASCII.GetBytes("YourSecretKeyHere"); // Use a secure key
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = false;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key)
-    };
-});
-
 var app = builder.Build();
 
 // Veritabanı oluşturulduktan sonra veri eklemek için SeedData sınıfını kullan
@@ -80,7 +59,6 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = string.Empty;
 });
 
-app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
