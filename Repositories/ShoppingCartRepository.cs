@@ -49,6 +49,13 @@ namespace SiparisUygulamasi.Repositories
         {
             await _shoppingCarts.DeleteOneAsync(cart => cart.UserId == userId);
         }
+
+        public async Task ClearCartAsync(ObjectId userId)
+        {
+            var filter = Builders<ShoppingCart>.Filter.Eq(cart => cart.UserId, userId);
+            var update = Builders<ShoppingCart>.Update.Set(cart => cart.Items, new List<CartItem>());
+            await _shoppingCarts.UpdateOneAsync(filter, update);
+        }
     }
 }
 

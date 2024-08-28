@@ -9,6 +9,7 @@ using SiparisUygulamasi.Repositories;
 using SiparisUygulamasi.Services.AuthServices.IndetityServices;
 using SiparisUygulamasi.Services.AuthServices.LoginServices;
 using SiparisUygulamasi.Services.AuthServices.TokenServices;
+using SiparisUygulamasi.Services.OrderServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,10 +45,13 @@ builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<ProductRepository>();
 builder.Services.AddScoped<OrderRepository>();
 builder.Services.AddScoped<ShoppingCartRepository>();
+builder.Services.AddScoped<AddressRepository>();
 
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IOrderProcessingService, OrderProcessingService>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<ShoppingCartService>();
+builder.Services.AddScoped<AddressService>();
 
 var app = builder.Build();
 

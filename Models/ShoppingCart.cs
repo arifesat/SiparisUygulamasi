@@ -19,7 +19,6 @@ public class ShoppingCart
 
     [BsonElement("Items")]
     public List<CartItem> Items { get; set; } = new List<CartItem>();
-
 }
 
 

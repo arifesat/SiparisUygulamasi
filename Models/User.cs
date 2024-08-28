@@ -2,6 +2,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text;
 using System.Security.Cryptography;
+using SiparisUygulamasi.Models;
 
 public class User
 {
@@ -53,4 +54,6 @@ public class User
     {
         Password = password;
     }
+
+    public Address Address { get; set; }
 }

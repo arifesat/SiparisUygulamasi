@@ -1,19 +1,22 @@
-﻿using SiparisUygulamasi.Models;
-using MongoDB.Bson;
-using SiparisUygulamasi.Repositories;
+﻿    using SiparisUygulamasi.Models;
+    using MongoDB.Bson;
+    using SiparisUygulamasi.Repositories;
+    using SiparisUygulamasi.Services.OrderServices;
 
-namespace SiparisUygulamasi.Services
-{
-    public class ShoppingCartService
+    namespace SiparisUygulamasi.Services
     {
-        private readonly ShoppingCartRepository _shoppingCartRepository;
-        private readonly ProductRepository _productRepository;
-
-        public ShoppingCartService(ShoppingCartRepository shoppingCartRepository, ProductRepository productRepository)
+        public class ShoppingCartService
         {
-            _shoppingCartRepository = shoppingCartRepository;
-            _productRepository = productRepository;
-        }
+            private readonly ShoppingCartRepository _shoppingCartRepository;
+            private readonly ProductRepository _productRepository;
+            private readonly IOrderProcessingService _orderProcessingService;
+
+            public ShoppingCartService(ShoppingCartRepository shoppingCartRepository, ProductRepository productRepository, IOrderProcessingService orderProcessingService)
+            {
+                _shoppingCartRepository = shoppingCartRepository;
+                _productRepository = productRepository;
+                _orderProcessingService = orderProcessingService;
+            }
 
         public async Task<ShoppingCart> CreateNewCartAsync(ObjectId userId)
         {
@@ -48,7 +51,6 @@ namespace SiparisUygulamasi.Services
             {
                 var newItem = new CartItem { ProductId = productId, Product = product.Name, Price = product.Price, Quantity = quantity };
                 cart.Items.Add(newItem);
-                //await _shoppingCartRepository.AddItemToCartAsync(userId, newItem);
             }
             await _shoppingCartRepository.UpdateCartAsync(cart);
         }
@@ -77,6 +79,11 @@ namespace SiparisUygulamasi.Services
                 cart.Items.Clear();
                 await _shoppingCartRepository.UpdateCartAsync(cart);
             }
+        }
+
+        public async Task TransferCartToOrderAsync(ObjectId userId)
+        {
+            await _orderProcessingService.ProcessOrderAsync(userId);
         }
     }
 }

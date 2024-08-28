@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SiparisUygulamasi.Data;
 using SiparisUygulamasi.Models;
+using SiparisUygulamasi.Models.Request;
+using SiparisUygulamasi.Services.OrderServices;
+using SiparisUygulamasi.Models.Request.UserRequest;
 using MongoDB.Driver;
 using MongoDB.Bson;
 
@@ -10,11 +13,13 @@ public class OrderController : ControllerBase
 {
     private readonly MongoDBContext _context;
     private readonly ILogger<OrderController> _logger;
+    private readonly OrderService _orderService;
 
-    public OrderController(MongoDBContext context, ILogger<OrderController> logger)
+    public OrderController(MongoDBContext context, ILogger<OrderController> logger, OrderService orderService)
     {
         _context = context;
         _logger = logger;
+        _orderService = orderService;
     }
     //This code block returns all of the orders
     //[HttpGet]
@@ -69,11 +74,36 @@ public class OrderController : ControllerBase
         return orders;
     }
 
+    //[HttpPost]
+    //public async Task<ActionResult<Order>> Create(Order order)
+    //{
+    //    await _context.Orders.InsertOneAsync(order);
+    //    return CreatedAtRoute(new { id = order.Id }, order);
+    //}
+
     [HttpPost]
-    public async Task<ActionResult<Order>> Create(Order order)
+    public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request)
     {
-        await _context.Orders.InsertOneAsync(order);
-        return CreatedAtRoute(new { id = order.Id }, order);
+        if (!ObjectId.TryParse(request.UserId, out var userId))
+        {
+            return BadRequest("Invalid user ID format.");
+        }
+
+        var cartItems = request.Items.Select(item => new CartItem
+        {
+            ProductId = ObjectId.Parse(item.ProductId),
+            Quantity = item.Quantity
+        }).ToList();
+
+        try
+        {
+            await _orderService.CreateOrderAsync(userId, cartItems);
+            return Ok("Order created successfully.");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPut("{id}")]

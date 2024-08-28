@@ -31,9 +31,9 @@ public class AddressService
         await _addressRepository.UpdateAddressAsync(id, updatedAddress);
     }
 
-    public async Task DeleteAddressAsync(ObjectId id)
+    public async Task DeleteAddressAsync(ObjectId userId)
     {
-        await _addressRepository.DeleteAddressAsync(id);
+        await _addressRepository.DeleteAddressAsync(userId);
     }
 
     public async Task<List<Address>> GetAddressesByUserIdAsync(ObjectId userId)

@@ -1,11 +1,13 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-
 namespace SiparisUygulamasi.Models
 {
     public class CartItem
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public ObjectId Id { get; set; }
         [BsonElement("ProductId")]
         public ObjectId ProductId { get; set; }
 
@@ -18,7 +20,7 @@ namespace SiparisUygulamasi.Models
         [BsonElement("Price")]
         public decimal Price { get; set; }
 
-        [BsonElement("TotalPrice")]
+        [BsonIgnore]
         public decimal TotalPrice => Quantity * Price; // This property is calculated and should not be serialized
     }
 }

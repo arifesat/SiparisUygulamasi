@@ -30,14 +30,23 @@ namespace SiparisUygulamasi.Repositories
             await _addresses.InsertOneAsync(address);
         }
 
-        public async Task UpdateAddressAsync(ObjectId id, Address updatedAddress)
+        public async Task UpdateAddressAsync(ObjectId userId, Address updatedAddress)
         {
-            await _addresses.ReplaceOneAsync(address => address.Id == id, updatedAddress);
+            var update = Builders<Address>.Update
+                .Set(a => a.Street, updatedAddress.Street)
+                .Set(a => a.City, updatedAddress.City)
+                .Set(a => a.PostalCode, updatedAddress.PostalCode)
+                .Set(a => a.Country, updatedAddress.Country)
+                .Set(a => a.BuildingNo, updatedAddress.BuildingNo)
+                .Set(a => a.DoorNo, updatedAddress.DoorNo);
+
+            await _addresses.UpdateOneAsync(address => address.UserId == userId, update);
+            //await _addresses.ReplaceOneAsync(address => address.UserId == userId, updatedAddress);
         }
 
-        public async Task DeleteAddressAsync(ObjectId id)
+        public async Task DeleteAddressAsync(ObjectId userId)
         {
-            await _addresses.DeleteOneAsync(address => address.Id == id);
+            await _addresses.DeleteOneAsync(address => address.UserId == userId);
         }
 
         public async Task<List<Address>> GetAddressesByUserIdAsync(ObjectId userId)

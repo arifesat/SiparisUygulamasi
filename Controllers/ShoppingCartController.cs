@@ -82,6 +82,25 @@ public class ShoppingCartController : ControllerBase
         await _shoppingCartService.ClearCartAsync(objectId);
         return NoContent();
     }
+
+    [HttpPost("{userId}/order")]
+    public async Task<IActionResult> CreateOrder(string userId)
+    {
+        if (!ObjectId.TryParse(userId, out var objectId))
+        {
+            return BadRequest("Invalid user ID format.");
+        }
+
+        try
+        {
+            await _shoppingCartService.TransferCartToOrderAsync(objectId);
+            return Ok("Order created successfully.");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }
 
 public class AddItemRequest

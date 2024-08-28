@@ -1,80 +1,75 @@
-﻿//using Microsoft.AspNetCore.Mvc;
-//using SiparisUygulamasi.Data;
-//using SiparisUygulamasi.Models;
-//using MongoDB.Driver;
-//using MongoDB.Bson;
+﻿using Microsoft.AspNetCore.Mvc;
+using SiparisUygulamasi.Data;
+using SiparisUygulamasi.Models;
+using MongoDB.Driver;
+using MongoDB.Bson;
 
-//namespace SiparisUygulamasi.Controllers
-//{
-//    public class AddressController : ControllerBase
-//    {
-//        private readonly MongoDBContext _context;
-//        private readonly ILogger<AddressController> _logger;
+namespace SiparisUygulamasi.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AddressController : ControllerBase
+    {
+        private readonly AddressService _addressService;
 
-//        public AddressController(MongoDBContext context, ILogger<AddressController> logger)
-//        {
-//            _context = context;
-//            _logger = logger;
-//        }
+        public AddressController(AddressService addressService)
+        {
+            _addressService = addressService;
+        }
 
-//        [HttpGet]
-//        public async Task<IEnumerable<Address>> Get()
-//        {
-//            try
-//            {
-//                return await _context.Addresses.Find(_ => true).ToListAsync();
-//            }
-//            catch (Exception ex)
-//            {
-//                _logger.LogError(ex, "An error occurred while retrieving addresses.");
-//                throw;
-//            }
-//        }
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<List<Address>>> GetAddressesByUserId(string userId)
+        {
+            if (!ObjectId.TryParse(userId, out var objectId))
+            {
+                return BadRequest("Invalid user ID format.");
+            }
 
-//        [HttpGet("{id}")]
-//        public async Task<ActionResult<Address>> Get(ObjectId id)
-//        {
-//            var address = await _context.Addresses.Find(p => p.Id == id).FirstOrDefaultAsync();
+            var addresses = await _addressService.GetAddressesByUserIdAsync(objectId);
+            if (addresses == null || addresses.Count == 0)
+            {
+                return NotFound();
+            }
 
-//            if (address == null)
-//            {
-//                return NotFound();
-//            }
+            return addresses;
+        }
 
-//            return address;
-//        }
+        [HttpPost("{userId}")]
+        public async Task<IActionResult> AddAddress(string userId, [FromBody] Address address)
+        {
+            if (!ObjectId.TryParse(userId, out var objectId))
+            {
+                return BadRequest("Invalid user ID format.");
+            }
 
-//        [HttpPost]
-//        public async Task<ActionResult<Address>> Create(Address address)
-//        {
-//            await _context.Addresses.InsertOneAsync(address);
-//            return CreatedAtRoute(new { id = address.Id }, address);
-//        }
+            address.UserId = objectId;
+            await _addressService.AddAddressAsync(address);
+            return CreatedAtAction(nameof(GetAddressesByUserId), new { userId = userId }, address);
+        }
 
-//        [HttpPut("{id}")]
-//        public async Task<IActionResult> Update(ObjectId id, Address addressIn)
-//        {
-//            var address = await _context.Addresses.Find(p => p.Id == id).FirstOrDefaultAsync();
-//            if (address == null)
-//            {
-//                return NotFound();
-//            }
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> UpdateAddress(string userId, [FromBody] Address updatedAddress)
+        {
+            if (!ObjectId.TryParse(userId, out var userObjectId))
+            {
+                return BadRequest("Invalid ID format.");
+            }
 
-//            await _context.Addresses.ReplaceOneAsync(p => p.Id == id, addressIn);
-//            return NoContent();
-//        }
+            updatedAddress.UserId = userObjectId;
+            await _addressService.UpdateAddressAsync(userObjectId, updatedAddress);
+            return NoContent();
+        }
 
-//        [HttpDelete("{id}")]
-//        public async Task<IActionResult> Delete(ObjectId id)
-//        {
-//            var address = await _context.Addresses.Find(p => p.Id == id).FirstOrDefaultAsync();
-//            if (address == null)
-//            {
-//                return NotFound();
-//            }
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> DeleteAddress(string userId)
+        {
+            if (!ObjectId.TryParse(userId, out var userObjectId))
+            {
+                return BadRequest("Invalid ID format.");
+            }
 
-//            await _context.Addresses.DeleteOneAsync(p => p.Id == id);
-//            return NoContent();
-//        }
-//    }
-//}
+            await _addressService.DeleteAddressAsync(userObjectId);
+            return NoContent();
+        }
+    }
+}
