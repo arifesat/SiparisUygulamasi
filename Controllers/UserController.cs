@@ -1,6 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Caching.Memory;
+using SiparisUygulamasi.Models.Response.UserResponse;
 using SiparisUygulamasi.Data;
+using SiparisUygulamasi.Services.AuthServices.LoginServices;
 using SiparisUygulamasi.Models;
+using SiparisUygulamasi.Models.Request.UserRequest;
 using MongoDB.Driver;
 using MongoDB.Bson;
 
@@ -8,18 +13,23 @@ using MongoDB.Bson;
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
+    private readonly ILoginService _service;
+    //private readonly IUpdateService _updateService;
+    private readonly IMemoryCache _memoryCache;
     private readonly MongoDBContext _context;
 
-    public UserController(MongoDBContext context)
+    public UserController(MongoDBContext context, ILoginService service, IMemoryCache memoryCache)
     {
         _context = context;
+        _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+        _service = service ?? throw new ArgumentNullException(nameof(service));
     }
 
-    [HttpGet]
-    public async Task<IEnumerable<User>> Get()
-    {
-        return await _context.Users.Find(_ => true).ToListAsync();
-    }
+    //[HttpGet]
+    //public async Task<IEnumerable<User>> Get()
+    //{
+    //    return await _context.Users.Find(_ => true).ToListAsync();
+    //}
 
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> Get(string id)
@@ -75,5 +85,32 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
+    [HttpPost("LoginUser")]
+    [AllowAnonymous]
+    public async Task<ActionResult<LoginResponse>> LoginUserAsync([FromBody] LoginRequest request)
+    {
+        var result = await _service.LoginUserAsync(request);
+        return result;
+    }
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        await _service.LogoutUserAsync();
+        _memoryCache.Remove("Bearer");
+        return Ok();
+    }
+
+    [HttpGet("redis/{name}")]
+    public void Set(string name)
+    {
+        _memoryCache.Set("name", name);
+
+    }
+    [HttpGet("redis get")]
+    public string Get()
+    {
+        return _memoryCache.Get<string>("Bearer");
+
+    }
 }
 

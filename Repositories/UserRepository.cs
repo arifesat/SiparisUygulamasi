@@ -5,7 +5,7 @@ using SiparisUygulamasi.Models;
 
 namespace SiparisUygulamasi.Repositories
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository<User>
     {
         private readonly IMongoCollection<User> _users;
 
@@ -42,6 +42,36 @@ namespace SiparisUygulamasi.Repositories
         public async Task DeleteUserAsync(ObjectId id)
         {
             await _users.DeleteOneAsync(user => user.Id == id);
+        }
+
+        public async Task<User> GetByNameAsync(string userName)
+        {
+            return await _users.Find(user => user.Username == userName).FirstOrDefaultAsync();
+        }
+
+        public async Task<User> GetByEmailAsync(string email)
+        {
+            return await _users.Find(user => user.Email == email).FirstOrDefaultAsync();
+        }
+
+        public async Task<User> UpdateUserAsync(object id, User entity)
+        {
+            var objectId = (ObjectId)id;
+            await _users.ReplaceOneAsync(user => user.Id == objectId, entity);
+            return entity;
+        }
+
+        public async Task<User> UpdateUserBookAsync(object id, User entity)
+        {
+            var objectId = (ObjectId)id;
+            await _users.ReplaceOneAsync(user => user.Id == objectId, entity);
+            return entity;
+        }
+
+        public async Task<User> GetUserById(object _id)
+        {
+            var objectId = (ObjectId)_id;
+            return await _users.Find(user => user.Id == objectId).FirstOrDefaultAsync();
         }
     }
 }
