@@ -33,8 +33,8 @@ public class User
     [BsonElement("Balance")]
     public required decimal Balance { get; set; } // Kullanıcının bakiyesi
 
-    [BsonElement("Role")]
-    public required string Role { get; set; } // Kullanıcının rolü (Admin, Customer vb.)
+    [BsonElement("Admin")]
+    public bool IsAdmin { get; set; }
 
     private string ComputeHash(string input)
     {
