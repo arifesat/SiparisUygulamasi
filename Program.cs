@@ -33,6 +33,18 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new() { Title = "SiparisUygulamasi", Version = "v1" });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:4200")  // Allow only this origin
+                   .AllowAnyHeader()
+                   .AllowAnyMethod()
+                   .AllowCredentials();  // Optional: if you are handling credentials
+        });
+});
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddMemoryCache();
 
@@ -79,6 +91,8 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseAuthorization();
+
+app.UseCors("AllowSpecificOrigin");
 
 app.MapControllers();
 

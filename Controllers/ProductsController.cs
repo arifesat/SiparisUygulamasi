@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SiparisUygulamasi.Data;
 using SiparisUygulamasi.Models;
+using SiparisUygulamasi.Repositories;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,52 +11,53 @@ using MongoDB.Bson;
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase
 {
-    private readonly MongoDBContext _context;
+    private readonly ProductRepository _productRepository;
     private readonly ILogger<ProductsController> _logger;
 
-    public ProductsController(MongoDBContext context, ILogger<ProductsController> logger)
+    public ProductsController(ProductRepository productRepository, ILogger<ProductsController> logger)
     {
-        _context = context;
+        _productRepository = productRepository;
         _logger = logger;
     }
 
-    //[HttpGet]
-    //public async Task<IEnumerable<Product>> Get()
-    //{
-    //    try
-    //    {
-    //        return await _context.Products.Find(_ => true).ToListAsync();
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        _logger.LogError(ex, "An error occurred while retrieving products.");
-    //        throw;
-    //    }
-    //}
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Product>>> GetAllProducts()
+    {
+        try
+        {
+            var products = await _productRepository.GetProductsAsync();
+            return Ok(products);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while retrieving products.");
+            return StatusCode(500, "Internal server error");
+        }
+    }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Product>> Get(string id)
+    public async Task<ActionResult<Product>> GetProductById(string id)
     {
         if (!ObjectId.TryParse(id, out var objectId))
         {
             return BadRequest("Invalid ID format.");
         }
 
-        var product = await _context.Products.Find(p => p.Id == objectId).FirstOrDefaultAsync();
+        var product = await _productRepository.GetProductByIdAsync(objectId);
 
         if (product == null)
         {
             return NotFound();
         }
 
-        return product;
+        return Ok(product);
     }
 
     [HttpPost]
     public async Task<ActionResult<Product>> Create(Product product)
     {
-        await _context.Products.InsertOneAsync(product);
-        return CreatedAtRoute(new { id = product.Id.ToString() }, product);
+        await _productRepository.AddProductAsync(product);
+        return CreatedAtAction(nameof(GetProductById), new { id = product.Id.ToString() }, product);
     }
 
     [HttpPut("{id}")]
@@ -66,14 +68,14 @@ public class ProductsController : ControllerBase
             return BadRequest("Invalid ID format.");
         }
 
-        var product = await _context.Products.Find(p => p.Id == objectId).FirstOrDefaultAsync();
+        var product = await _productRepository.GetProductByIdAsync(objectId);
 
         if (product == null)
         {
             return NotFound();
         }
 
-        await _context.Products.ReplaceOneAsync(p => p.Id == objectId, productIn);
+        await _productRepository.UpdateProductAsync(objectId, productIn);
 
         return NoContent();
     }
@@ -86,14 +88,14 @@ public class ProductsController : ControllerBase
             return BadRequest("Invalid ID format.");
         }
 
-        var product = await _context.Products.Find(p => p.Id == objectId).FirstOrDefaultAsync();
+        var product = await _productRepository.GetProductByIdAsync(objectId);
 
         if (product == null)
         {
             return NotFound();
         }
 
-        await _context.Products.DeleteOneAsync(p => p.Id == objectId);
+        await _productRepository.DeleteProductAsync(objectId);
 
         return NoContent();
     }

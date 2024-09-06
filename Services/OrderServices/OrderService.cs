@@ -11,14 +11,16 @@ namespace SiparisUygulamasi.Services.OrderServices
         private readonly IOrderProcessingService _orderProcessingService;
         private readonly UserRepository _userRepository;
         private readonly ProductRepository _productRepository;
+        private readonly AddressService _addressService;
 
-        public OrderService(ProductRepository productRepository, UserRepository userRepository, OrderRepository orderRepository, ShoppingCartService shoppingCartService, IOrderProcessingService orderProcessingService)
+        public OrderService(AddressService addressService, ProductRepository productRepository, UserRepository userRepository, OrderRepository orderRepository, ShoppingCartService shoppingCartService, IOrderProcessingService orderProcessingService)
         {
             _orderRepository = orderRepository;
             _shoppingCartService = shoppingCartService;
             _orderProcessingService = orderProcessingService;
             _userRepository = userRepository;
             _productRepository = productRepository;
+            _addressService = addressService;
         }
 
         public async Task<List<Order>> GetAllOrdersAsync()
@@ -77,6 +79,12 @@ namespace SiparisUygulamasi.Services.OrderServices
                 throw new Exception("User not found.");
             }
 
+            var address = await _addressService.GetAddressesByUserIdAsync(userId);
+            if (address == null || !address.Any())
+            {
+                throw new Exception("User address not found.");
+            }
+
             var orderItems = new List<CartItem>();
             foreach (var item in items)
             {
@@ -103,7 +111,7 @@ namespace SiparisUygulamasi.Services.OrderServices
                 Items = orderItems,
                 TotalAmount = orderItems.Sum(i => i.Quantity * i.Price),
                 OrderDate = DateTime.UtcNow,
-                Address = user.Address // Assuming the user has an Address property
+                Address = address.First() // Assuming the user has an Address property
             };
 
             await _orderRepository.AddOrderAsync(order);
