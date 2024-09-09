@@ -26,6 +26,7 @@ namespace SiparisUygulamasi.Controllers
             var result = await _service.LoginUserAsync(request);
             return result;
         }
+
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {

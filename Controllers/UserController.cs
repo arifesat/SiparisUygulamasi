@@ -7,7 +7,6 @@ using MongoDB.Bson;
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
-    
     private readonly MongoDBContext _context;
 
     public UserController(MongoDBContext context)
@@ -74,6 +73,5 @@ public class UserController : ControllerBase
 
         return NoContent();
     }
-
 }
 

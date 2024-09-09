@@ -38,6 +38,18 @@ namespace SiparisUygulamasi.Services.OrderServices
             return await _orderRepository.GetOrdersByUserIdAsync(userId);
         }
 
+        //Delete order
+        public async Task DeleteOrderAsync(ObjectId id)
+        {
+            await _orderRepository.DeleteOrderAsync(id);
+        }
+
+        //update order function
+        public async Task UpdateOrderAsync(ObjectId id, Order updatedOrder)
+        {
+            await _orderRepository.UpdateOrderAsync(id, updatedOrder);
+        }
+
         public async Task PlaceOrderAsync(ObjectId userId)
         {
             // Get the shopping cart for the user
