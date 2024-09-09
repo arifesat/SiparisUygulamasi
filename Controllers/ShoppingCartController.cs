@@ -10,12 +10,9 @@ public class ShoppingCartController : ControllerBase
 {
     private readonly ShoppingCartService _shoppingCartService;
 
-    private readonly MongoDBContext _context;
-
-    public ShoppingCartController(ShoppingCartService shoppingCartService, MongoDBContext context)
+    public ShoppingCartController(ShoppingCartService shoppingCartService)
     {
         _shoppingCartService = shoppingCartService;
-        _context = context;
     }
 
     [HttpGet("{userId}")]
@@ -35,24 +32,6 @@ public class ShoppingCartController : ControllerBase
         return cart;
     }
 
-    [HttpPost("{userId}/items")]
-    public async Task<IActionResult> AddItemToCart(string userId, [FromBody] AddItemRequest request)
-    {
-        if (!ObjectId.TryParse(userId, out var objectId))
-        {
-            return BadRequest("Invalid user ID format.");
-        }
-
-        if (!ObjectId.TryParse(request.ProductId, out var productId))
-        {
-            return BadRequest("Invalid product ID format.");
-        }
-
-        var User = await _context.Users.Find(p => p.Id == objectId).FirstOrDefaultAsync();
-
-        await _shoppingCartService.AddItemToCartAsync(objectId, productId, request.Quantity);
-        return NoContent();
-    }
 
     [HttpDelete("{userId}/items/{productId}")]
     public async Task<IActionResult> RemoveItemFromCart(string userId, string productId)
@@ -68,18 +47,6 @@ public class ShoppingCartController : ControllerBase
         }
 
         await _shoppingCartService.RemoveItemFromCartAsync(objectId, productObjectId);
-        return NoContent();
-    }
-
-    [HttpDelete("{userId}")]
-    public async Task<IActionResult> ClearCart(string userId)
-    {
-        if (!ObjectId.TryParse(userId, out var objectId))
-        {
-            return BadRequest("Invalid user ID format.");
-        }
-
-        await _shoppingCartService.ClearCartAsync(objectId);
         return NoContent();
     }
 
@@ -101,7 +68,39 @@ public class ShoppingCartController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    [HttpDelete("{userId}")]
+    public async Task<IActionResult> ClearCart(string userId)
+    {
+        if (!ObjectId.TryParse(userId, out var objectId))
+        {
+            return BadRequest("Invalid user ID format.");
+        }
+
+        await _shoppingCartService.ClearCartAsync(objectId);
+        return NoContent();
+    }
+
 }
+
+    //[HttpPost("{userId}/items")]
+    //public async Task<IActionResult> AddItemToCart(string userId, [FromBody] AddItemRequest request)
+    //{
+    //    if (!ObjectId.TryParse(userId, out var objectId))
+    //    {
+    //        return BadRequest("Invalid user ID format.");
+    //    }
+
+    //    if (!ObjectId.TryParse(request.ProductId, out var productId))
+    //    {
+    //        return BadRequest("Invalid product ID format.");
+    //    }
+
+    //    var User = await _context.Users.Find(p => p.Id == objectId).FirstOrDefaultAsync();
+
+    //    await _shoppingCartService.AddItemToCartAsync(objectId, productId, request.Quantity);
+    //    return NoContent();
+    //}
 
 public class AddItemRequest
 {
