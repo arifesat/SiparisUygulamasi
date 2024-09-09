@@ -3,11 +3,11 @@ using SiparisUygulamasi.Repositories;
 namespace SiparisUygulamasi.Services
 
 {
-    public class ProductService
+    public class ProductService : IProductService
     {
-        private readonly ProductRepository _productRepository;
+        private readonly IProductRepository _productRepository;
 
-        public ProductService(ProductRepository productRepository)
+        public ProductService(IProductRepository productRepository)
         {
             _productRepository = productRepository;
         }

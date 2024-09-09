@@ -3,25 +3,24 @@ using MongoDB.Driver;
 using SiparisUygulamasi.Data;
 using SiparisUygulamasi.Models;
 using SiparisUygulamasi.Services;
+using SiparisUygulamasi.Repositories;
 
 namespace SiparisUygulamasi.Repositories
 {
-    public class OrderRepository
+    public class OrderRepository : IOrderRepository
     {
         private readonly IMongoCollection<Order> _orders;
-        private readonly ShoppingCartService _shoppingCartService;
-        private readonly OrderRepository _orderRepository;
+        private readonly Lazy<IShoppingCartService> _shoppingCartService;
         private readonly UserRepository _userRepository;
-        private readonly ProductRepository _productRepository;
-        private readonly AddressService _addressService;
+        private readonly IProductRepository _productRepository;
+        private readonly IAddressService _addressService;
 
 
-        public OrderRepository(MongoDBContext context, ShoppingCartService shoppingCartService, OrderRepository orderRepository, UserRepository userRepository
-            , ProductRepository productRepository, AddressService addressService)
+        public OrderRepository(MongoDBContext context, Lazy<IShoppingCartService> shoppingCartService, UserRepository userRepository
+            , IProductRepository productRepository, IAddressService addressService)
         {
             _orders = context.Orders;
             _shoppingCartService = shoppingCartService;
-            _orderRepository = orderRepository;
             _addressService = addressService;
             _userRepository = userRepository;
             _productRepository = productRepository;
@@ -60,7 +59,7 @@ namespace SiparisUygulamasi.Repositories
         public async Task PlaceOrderAsync(ObjectId userId)
         {
             // Get the shopping cart for the user
-            var cart = await _shoppingCartService.GetCartByUserIdAsync(userId);
+            var cart = await _shoppingCartService.Value.GetCartByUserIdAsync(userId);
 
             if (cart == null || !cart.Items.Any())
             {
@@ -84,10 +83,10 @@ namespace SiparisUygulamasi.Repositories
                 OrderDate = DateTime.UtcNow
             };
 
-            await _orderRepository.AddOrderAsync(order);
+            await AddOrderAsync(order);
 
             // Clear the shopping cart after placing the order
-            await _shoppingCartService.ClearCartAsync(userId);
+            await _shoppingCartService.Value.ClearCartAsync(userId);
         }
 
         public async Task CreateOrderAsync(ObjectId userId, List<CartItem> items)
@@ -133,7 +132,7 @@ namespace SiparisUygulamasi.Repositories
                 Address = address.First() // Assuming the user has an Address property
             };
 
-            await _orderRepository.AddOrderAsync(order);
+            await AddOrderAsync(order);
         }
     }
 }

@@ -5,18 +5,15 @@ using SiparisUygulamasi.Models;
 
 namespace SiparisUygulamasi.Repositories
 {
-    public class ShoppingCartRepository
+    public class ShoppingCartRepository : IShoppingCartRepository
     {
         private readonly IMongoCollection<ShoppingCart> _shoppingCarts;
-        private readonly ProductRepository _productRepository;
-        private readonly ShoppingCartRepository _shoppingCartRepository;
+        private readonly IProductRepository _productRepository;
 
-
-        public ShoppingCartRepository(ShoppingCartRepository shoppingCartRepository, MongoDBContext context, ProductRepository productRepository)
+        public ShoppingCartRepository(MongoDBContext context, IProductRepository productRepository)
         {
             _shoppingCarts = context.ShoppingCarts;
             _productRepository = productRepository;
-            _shoppingCartRepository = shoppingCartRepository;
         }
 
         public async Task<ShoppingCart> CreateNewCartAsync(ObjectId userId)
@@ -78,17 +75,17 @@ namespace SiparisUygulamasi.Repositories
 
         public async Task ClearCartAsync(ObjectId userId)
         {
-            var cart = await _shoppingCartRepository.GetCartByUserIdAsync(userId);
+            var cart = await GetCartByUserIdAsync(userId);
             if (cart != null)
             {
                 cart.Items.Clear();
-                await _shoppingCartRepository.UpdateCartAsync(cart);
+                await UpdateCartAsync(cart);
             }
         }
 
         public async Task RemoveItemFromCartAsync(ObjectId userId, ObjectId productId)
         {
-            var cart = await _shoppingCartRepository.GetCartByUserIdAsync(userId);
+            var cart = await GetCartByUserIdAsync(userId);
             if (cart == null)
             {
                 throw new Exception("Cart not found.");
@@ -98,9 +95,8 @@ namespace SiparisUygulamasi.Repositories
             if (itemToRemove != null)
             {
                 cart.Items.Remove(itemToRemove);
-                await _shoppingCartRepository.UpdateCartAsync(cart);
+                await UpdateCartAsync(cart);
             }
         }
     }
 }
-

@@ -6,7 +6,7 @@ using SiparisUygulamasi.Data;
 
 namespace SiparisUygulamasi.Repositories
 {
-    public class AddressRepository
+    public class AddressRepository : IAddressRepository
     {
         private readonly IMongoCollection<Address> _addresses;
 

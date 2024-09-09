@@ -4,7 +4,7 @@ using SiparisUygulamasi.Repositories;
 
 namespace SiparisUygulamasi.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
         private readonly UserRepository _userRepository;
 

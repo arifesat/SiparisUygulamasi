@@ -1,22 +1,21 @@
-﻿    using SiparisUygulamasi.Models;
-    using MongoDB.Bson;
-    using SiparisUygulamasi.Repositories;
-    using SiparisUygulamasi.Services.OrderServices;
+﻿using SiparisUygulamasi.Models;
+using MongoDB.Bson;
+using SiparisUygulamasi.Repositories;
 
-    namespace SiparisUygulamasi.Services
+namespace SiparisUygulamasi.Services
+{
+    public class ShoppingCartService : IShoppingCartService
     {
-        public class ShoppingCartService
-        {
-            private readonly ShoppingCartRepository _shoppingCartRepository;
-            private readonly ProductService _productService;
-            private readonly IOrderProcessingService _orderProcessingService;
+        private readonly IShoppingCartRepository _shoppingCartRepository;
+        private readonly IProductService _productService;
+        private readonly Func<IOrderProcessingService> _orderProcessingServiceFactory;
 
-            public ShoppingCartService(ShoppingCartRepository shoppingCartRepository, ProductService productService, IOrderProcessingService orderProcessingService)
-            {
-                _shoppingCartRepository = shoppingCartRepository;
-                _productService = productService;
-                _orderProcessingService = orderProcessingService;
-            }
+        public ShoppingCartService(IShoppingCartRepository shoppingCartRepository, IProductService productService, Func<IOrderProcessingService> orderProcessingServiceFactory)
+        {
+            _shoppingCartRepository = shoppingCartRepository;
+            _productService = productService;
+            _orderProcessingServiceFactory = orderProcessingServiceFactory;
+        }
 
         public async Task<ShoppingCart> CreateNewCartAsync(ObjectId userId)
         {
@@ -45,7 +44,8 @@
 
         public async Task TransferCartToOrderAsync(ObjectId userId)
         {
-            await _orderProcessingService.ProcessOrderAsync(userId);
+            var orderProcessingService = _orderProcessingServiceFactory();
+            await orderProcessingService.ProcessOrderAsync(userId);
         }
     }
 }

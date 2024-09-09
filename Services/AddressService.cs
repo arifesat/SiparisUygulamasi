@@ -1,8 +1,9 @@
 using MongoDB.Bson;
 using SiparisUygulamasi.Models;
 using SiparisUygulamasi.Repositories;
+using SiparisUygulamasi.Services;
 
-public class AddressService
+public class AddressService : IAddressService
 {
     private readonly AddressRepository _addressRepository;
 

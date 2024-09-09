@@ -53,17 +53,26 @@ builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<IUserRepository<User>, UserRepository>();
 
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
 builder.Services.AddScoped<UserRepository>();
-builder.Services.AddScoped<ProductRepository>();
-builder.Services.AddScoped<OrderRepository>();
-builder.Services.AddScoped<ShoppingCartRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<AddressRepository>();
 
-builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IOrderProcessingService, OrderProcessingService>();
-builder.Services.AddScoped<OrderService>();
-builder.Services.AddScoped<ShoppingCartService>();
-builder.Services.AddScoped<AddressService>();
+builder.Services.AddScoped<Func<IOrderProcessingService>>(provider => () => provider.GetRequiredService<IOrderProcessingService>());
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+
+builder.Services.AddScoped<IOrderProcessingHelper, OrderProcessingHelper>();
+builder.Services.AddScoped<Func<IOrderService>>(provider => () => provider.GetRequiredService<IOrderService>());
+
+builder.Services.AddScoped(provider => new Lazy<IOrderRepository>(() => provider.GetRequiredService<IOrderRepository>()));
+builder.Services.AddScoped(provider => new Lazy<IOrderService>(() => provider.GetRequiredService<IOrderService>()));
+builder.Services.AddScoped(provider => new Lazy<IShoppingCartService>(() => provider.GetRequiredService<IShoppingCartService>()));
 
 var app = builder.Build();
 

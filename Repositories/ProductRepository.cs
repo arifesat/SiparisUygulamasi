@@ -5,7 +5,7 @@ using SiparisUygulamasi.Models;
 
 namespace SiparisUygulamasi.Repositories
 {
-    public class ProductRepository
+    public class ProductRepository : IProductRepository
     {
         private readonly IMongoCollection<Product> _products;
 

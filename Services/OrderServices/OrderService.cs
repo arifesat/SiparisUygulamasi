@@ -4,20 +4,18 @@ using SiparisUygulamasi.Repositories;
 
 namespace SiparisUygulamasi.Services.OrderServices
 {
-    public class OrderService
+    public class OrderService : IOrderService
     {
-        private readonly OrderRepository _orderRepository;
-        private readonly ShoppingCartService _shoppingCartService;
-        private readonly IOrderProcessingService _orderProcessingService;
-        private readonly UserService _userService;
-        private readonly ProductService _productService;
-        private readonly AddressService _addressService;
+        private readonly Lazy<IOrderRepository> _orderRepository;
+        private readonly IShoppingCartService _shoppingCartService;
+        private readonly IUserService _userService;
+        private readonly IProductService _productService;
+        private readonly IAddressService _addressService;
 
-        public OrderService(AddressService addressService, ProductService productService, UserService userService, OrderRepository orderRepository, ShoppingCartService shoppingCartService, IOrderProcessingService orderProcessingService)
+        public OrderService(IAddressService addressService, IProductService productService, IUserService userService, Lazy<IOrderRepository> orderRepository, IShoppingCartService shoppingCartService)
         {
             _orderRepository = orderRepository;
             _shoppingCartService = shoppingCartService;
-            _orderProcessingService = orderProcessingService;
             _userService = userService;
             _productService = productService;
             _addressService = addressService;
@@ -25,37 +23,42 @@ namespace SiparisUygulamasi.Services.OrderServices
 
         public async Task<List<Order>> GetAllOrdersAsync()
         {
-            return await _orderRepository.GetOrdersAsync();
+            return await _orderRepository.Value.GetOrdersAsync();
         }
 
         public async Task<Order> GetOrderByIdAsync(ObjectId id)
         {
-            return await _orderRepository.GetOrderByIdAsync(id);
+            return await _orderRepository.Value.GetOrderByIdAsync(id);
         }
 
         public async Task<List<Order>> GetOrdersByUserIdAsync(ObjectId userId)
         {
-            return await _orderRepository.GetOrdersByUserIdAsync(userId);
+            return await _orderRepository.Value.GetOrdersByUserIdAsync(userId);
         }
 
         public async Task DeleteOrderAsync(ObjectId id)
         {
-            await _orderRepository.DeleteOrderAsync(id);
+            await _orderRepository.Value.DeleteOrderAsync(id);
         }
 
         public async Task UpdateOrderAsync(ObjectId id, Order updatedOrder)
         {
-            await _orderRepository.UpdateOrderAsync(id, updatedOrder);
+            await _orderRepository.Value.UpdateOrderAsync(id, updatedOrder);
         }
 
         public async Task PlaceOrderAsync(ObjectId userId)
         {
-            await _orderRepository.PlaceOrderAsync(userId);
+            await _orderRepository.Value.PlaceOrderAsync(userId);
         }
 
         public async Task CreateOrderAsync(ObjectId userId, List<CartItem> items)
         {
-            await _orderRepository.CreateOrderAsync(userId, items);
+            await _orderRepository.Value.CreateOrderAsync(userId, items);
+        }
+
+        public async Task AddOrderAsync(Order order)
+        {
+            await _orderRepository.Value.AddOrderAsync(order);
         }
     }
 }
