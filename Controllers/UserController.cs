@@ -2,29 +2,29 @@
 using SiparisUygulamasi.Data;
 using MongoDB.Driver;
 using MongoDB.Bson;
+using SiparisUygulamasi.Services;
 
 [ApiController]
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly MongoDBContext _context;
-
-    public UserController(MongoDBContext context)
+    private readonly UserService _userService;
+    public UserController(UserService userService)
     {
-        _context = context;
+        _userService = userService;
     }
 
     [HttpGet]
     public async Task<IEnumerable<User>> Get()
     {
-        return await _context.Users.Find(_ => true).ToListAsync();
+        return await _userService.GetAllUsersAsync();
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> Get(string id)
     {
         var objectId = ObjectId.Parse(id);
-        var User = await _context.Users.Find(p => p.Id == objectId).FirstOrDefaultAsync();
+        var User = await _userService.GetUserByIdAsync(objectId);
 
         if (User == null)
         {
@@ -37,7 +37,7 @@ public class UserController : ControllerBase
     public async Task<ActionResult<User>> Create(User User)
     {
         User.SetPassword(User.Password);
-        await _context.Users.InsertOneAsync(User);
+        await _userService.AddUserAsync(User);
         return CreatedAtRoute(new { id = User.Id }, User);
     }
 
@@ -45,14 +45,14 @@ public class UserController : ControllerBase
     public async Task<IActionResult> Update(string id, User UserIn)
     {
         var objectId = ObjectId.Parse(id);
-        var User = await _context.Users.Find(p => p.Id == objectId).FirstOrDefaultAsync();
+        var User = await _userService.GetUserByIdAsync(objectId);
 
         if (User == null)
         {
             return NotFound();
         }
 
-        await _context.Users.ReplaceOneAsync(p => p.Id == objectId, UserIn);
+        await _userService.UpdateUserAsync(objectId, UserIn);
 
         return NoContent();
     }
@@ -62,14 +62,14 @@ public class UserController : ControllerBase
     {
         var objectId = ObjectId.Parse(id);
 
-        var User = await _context.Users.Find(p => p.Id == objectId).FirstOrDefaultAsync();
+        var User = await _userService.GetUserByIdAsync(objectId); ;
 
         if (User == null)
         {
             return NotFound();
         }
 
-        await _context.Users.DeleteOneAsync(p => p.Id == objectId);
+        await _userService.DeleteUserAsync(objectId);
 
         return NoContent();
     }
