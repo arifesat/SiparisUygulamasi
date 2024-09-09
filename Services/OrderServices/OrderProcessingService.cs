@@ -1,22 +1,24 @@
 using MongoDB.Bson;
 using SiparisUygulamasi.Models;
 using SiparisUygulamasi.Repositories;
+using SiparisUygulamasi.Services;
+
 
 public class OrderProcessingService : IOrderProcessingService
 {
     private readonly OrderRepository _orderRepository;
-    private readonly ShoppingCartRepository _shoppingCartRepository;
+    private readonly ShoppingCartService _shoppingCartService;
 
-    public OrderProcessingService(OrderRepository orderRepository, ShoppingCartRepository shoppingCartRepository)
+    public OrderProcessingService(OrderRepository orderRepository, ShoppingCartService shoppingCartService)
     {
         _orderRepository = orderRepository;
-        _shoppingCartRepository = shoppingCartRepository;
+        _shoppingCartService = shoppingCartService;
     }
 
     public async Task ProcessOrderAsync(ObjectId userId)
     {
         // Get the shopping cart for the user
-        var cart = await _shoppingCartRepository.GetCartByUserIdAsync(userId);
+        var cart = await _shoppingCartService.GetCartByUserIdAsync(userId);
 
         if (cart == null || !cart.Items.Any())
         {
@@ -43,6 +45,6 @@ public class OrderProcessingService : IOrderProcessingService
         await _orderRepository.AddOrderAsync(order);
 
         // Clear the shopping cart after placing the order
-        await _shoppingCartRepository.ClearCartAsync(userId);
+        await _shoppingCartService.ClearCartAsync(userId);
     }
 }

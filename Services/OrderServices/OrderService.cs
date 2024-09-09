@@ -9,17 +9,17 @@ namespace SiparisUygulamasi.Services.OrderServices
         private readonly OrderRepository _orderRepository;
         private readonly ShoppingCartService _shoppingCartService;
         private readonly IOrderProcessingService _orderProcessingService;
-        private readonly UserRepository _userRepository;
-        private readonly ProductRepository _productRepository;
+        private readonly UserService _userService;
+        private readonly ProductService _productService;
         private readonly AddressService _addressService;
 
-        public OrderService(AddressService addressService, ProductRepository productRepository, UserRepository userRepository, OrderRepository orderRepository, ShoppingCartService shoppingCartService, IOrderProcessingService orderProcessingService)
+        public OrderService(AddressService addressService, ProductService productService, UserService userService, OrderRepository orderRepository, ShoppingCartService shoppingCartService, IOrderProcessingService orderProcessingService)
         {
             _orderRepository = orderRepository;
             _shoppingCartService = shoppingCartService;
             _orderProcessingService = orderProcessingService;
-            _userRepository = userRepository;
-            _productRepository = productRepository;
+            _userService = userService;
+            _productService = productService;
             _addressService = addressService;
         }
 
@@ -38,13 +38,11 @@ namespace SiparisUygulamasi.Services.OrderServices
             return await _orderRepository.GetOrdersByUserIdAsync(userId);
         }
 
-        //Delete order
         public async Task DeleteOrderAsync(ObjectId id)
         {
             await _orderRepository.DeleteOrderAsync(id);
         }
 
-        //update order function
         public async Task UpdateOrderAsync(ObjectId id, Order updatedOrder)
         {
             await _orderRepository.UpdateOrderAsync(id, updatedOrder);
@@ -52,81 +50,12 @@ namespace SiparisUygulamasi.Services.OrderServices
 
         public async Task PlaceOrderAsync(ObjectId userId)
         {
-            // Get the shopping cart for the user
-            var cart = await _shoppingCartService.GetCartByUserIdAsync(userId);
-
-            if (cart == null || !cart.Items.Any())
-            {
-                throw new Exception("Cart is empty, cannot place order.");
-            }
-
-            // Create the order based on the shopping cart items
-            var orderItems = cart.Items.Select(item => new CartItem
-            {
-                ProductId = item.ProductId, // Convert ObjectId to string
-                Product = item.Product,
-                Quantity = item.Quantity,
-                Price = item.Price
-            }).ToList();
-
-            var order = new Order
-            {
-                UserId = userId,
-                Items = orderItems,
-                TotalAmount = orderItems.Sum(item => item.Quantity * item.Price),
-                OrderDate = DateTime.UtcNow
-            };
-
-            await _orderRepository.AddOrderAsync(order);
-
-            // Clear the shopping cart after placing the order
-            await _shoppingCartService.ClearCartAsync(userId);
+            await _orderRepository.PlaceOrderAsync(userId);
         }
 
         public async Task CreateOrderAsync(ObjectId userId, List<CartItem> items)
         {
-            var user = await _userRepository.GetUserByIdAsync(userId);
-            if (user == null)
-            {
-                throw new Exception("User not found.");
-            }
-
-            var address = await _addressService.GetAddressesByUserIdAsync(userId);
-            if (address == null || !address.Any())
-            {
-                throw new Exception("User address not found.");
-            }
-
-            var orderItems = new List<CartItem>();
-            foreach (var item in items)
-            {
-                var productId = item.ProductId;
-
-                var product = await _productRepository.GetProductByIdAsync(productId);
-                if (product == null)
-                {
-                    throw new Exception($"Product with ID {item.ProductId} not found.");
-                }
-
-                orderItems.Add(new CartItem
-                {
-                    ProductId = productId,
-                    Product = product.Name,
-                    Quantity = item.Quantity,
-                    Price = product.Price
-                });
-            }
-
-            var order = new Order
-            {
-                UserId = userId,
-                Items = orderItems,
-                TotalAmount = orderItems.Sum(i => i.Quantity * i.Price),
-                OrderDate = DateTime.UtcNow,
-                Address = address.First() // Assuming the user has an Address property
-            };
-
-            await _orderRepository.AddOrderAsync(order);
+            await _orderRepository.CreateOrderAsync(userId, items);
         }
     }
 }
