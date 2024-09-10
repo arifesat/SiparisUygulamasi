@@ -11,10 +11,10 @@ using MongoDB.Bson;
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase
 {
-    private readonly ProductRepository _productRepository;
+    private readonly IProductRepository _productRepository;
     private readonly ILogger<ProductsController> _logger;
 
-    public ProductsController(ProductRepository productRepository, ILogger<ProductsController> logger)
+    public ProductsController(IProductRepository productRepository, ILogger<ProductsController> logger)
     {
         _productRepository = productRepository;
         _logger = logger;

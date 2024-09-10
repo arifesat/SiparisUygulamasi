@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "apis1": {
+      "type": "apis"
+    },
+    "secrets1": {
+      "type": "secrets"
+    },
+    "mongodb1": {
+      "type": "mongodb",
+      "connectionId": "IcmSNGCVf0EBG5dU5YCPppYQP08VTu65nN25BRSoBs8=",
+      "dynamicId": null
+    },
+    "identityapp1": {
+      "type": "identityapp"
+    }
+  }
+}

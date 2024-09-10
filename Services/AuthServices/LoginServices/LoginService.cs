@@ -8,6 +8,8 @@ using SiparisUygulamasi.Repositories;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Amazon.Runtime.Internal.Util;
 
 namespace SiparisUygulamasi.Services.AuthServices.LoginServices
 {
@@ -16,17 +18,19 @@ namespace SiparisUygulamasi.Services.AuthServices.LoginServices
         private readonly IUserRepository<User> _repository;
         private readonly ITokenService _tokenService;
         private readonly IHttpContextAccessor _contextAccessor;
-        private readonly IIdentityService _ıdentityservice;
+        private readonly IIdentityService _identityservice;
         private readonly IMemoryCache _memoryCache;
+        private readonly ILogger<LoginService> _logger;
         private string hashPassword;
 
-        public LoginService(IUserRepository<User> repository, ITokenService tokenService, IHttpContextAccessor contextAccessor, IMemoryCache memoryCache, IIdentityService ıdentityService)
+        public LoginService(IUserRepository<User> repository, ITokenService tokenService, IHttpContextAccessor contextAccessor, IMemoryCache memoryCache, IIdentityService identityService, ILogger<LoginService> logger)
         {
             _repository = repository;
             _tokenService = tokenService;
             _contextAccessor = contextAccessor;
             _memoryCache = memoryCache;
-            _ıdentityservice = ıdentityService;
+            _identityservice = identityService;
+            _logger = logger;
         }
 
         public async Task<User> GetByNameAsync(string name)
@@ -56,7 +60,7 @@ namespace SiparisUygulamasi.Services.AuthServices.LoginServices
             Console.WriteLine($"Login request received. Username: {request.Username}, Email: {request.Email}");
 
             // Fetch user by username and email
-            User user = await _ıdentityservice.LoginByUserNameAndEmailQuery(
+            User user = await _identityservice.LoginByUserNameAndEmailQuery(
                 await _repository.GetByNameAsync(request.Username),
                 await _repository.GetByEmailAsync(request.Email)
             );
@@ -130,7 +134,7 @@ namespace SiparisUygulamasi.Services.AuthServices.LoginServices
         private async Task<LoginResponse> LoginUserAsyncInternal(LoginRequest request)
         {
             LoginResponse response = new LoginResponse();
-            User user = await _ıdentityservice.LoginByUserNameAndEmailQuery(await _repository.GetByNameAsync(request.Username), await _repository.GetByEmailAsync(request.Email));
+            User user = await _identityservice.LoginByUserNameAndEmailQuery(await _repository.GetByNameAsync(request.Username), await _repository.GetByEmailAsync(request.Email));
 
             SHA1 sha = new SHA1CryptoServiceProvider();
             hashPassword = Convert.ToBase64String(sha.ComputeHash(Encoding.ASCII.GetBytes(request.Password)));

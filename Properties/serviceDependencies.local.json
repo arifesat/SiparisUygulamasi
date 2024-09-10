@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "secrets1": {
+      "type": "secrets.user"
+    },
+    "mongodb1": {
+      "containerPorts": "27017:27017",
+      "secretStore": "LocalSecretsFile",
+      "containerName": "mongodb",
+      "containerImage": "mongo",
+      "type": "mongodb.container",
+      "connectionId": "IcmSNGCVf0EBG5dU5YCPppYQP08VTu65nN25BRSoBs8=",
+      "dynamicId": null
+    },
+    "identityapp1": {
+      "connectionInfo": "App registration: Arif Esat, Tenant: comu.edu.tr (comu.edu.tr - Microsoft Entra ID)",
+      "type": "identityapp.default"
+    }
+  }
+}
